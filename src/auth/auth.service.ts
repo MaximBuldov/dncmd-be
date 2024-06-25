@@ -18,6 +18,12 @@ export class AuthService {
     private jwt: JwtService
   ) {}
 
+  async users() {
+    return await this.prisma.user.findMany({
+      select: { id: true }
+    });
+  }
+
   async login(dto: LoginDto) {
     const user = await this.validateUser(dto);
     return await this.returnUserFields(user);
@@ -34,16 +40,7 @@ export class AuthService {
     return await this.returnUserFields(user);
   }
 
-  async register({
-    email,
-    instagram,
-    dob,
-    role,
-    password,
-    last_name,
-    billing_phone,
-    first_name
-  }: AuthDto) {
+  async register({ email, dob, password, ...rest }: AuthDto) {
     const oldUser = await this.prisma.user.findUnique({
       where: { email }
     });
@@ -52,13 +49,9 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
+        ...rest,
         email,
-        lastName: last_name,
-        instagram,
         dob: new Date(dob),
-        billingPhone: billing_phone,
-        firstName: first_name,
-        role,
         password: await hash(password)
       }
     });

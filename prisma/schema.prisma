@@ -15,16 +15,16 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   email String @unique
-  firstName String @map("first_name")
-  lastName String @map("last_name")
+  first_name String
+  last_name String
   password String
   instagram String
   dob DateTime
-  billingPhone String @map("billing_phone")
+  billing_phone String
   role Role @default(customer)
 
   orders Order[]
@@ -35,22 +35,22 @@ model User {
 
 model Product {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   name String
   price Float
-  date_time String
-  isCanceled Boolean @default(false) @map("is_canceled")
-  stockStatus StockStatus @map("stock_status")
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId Int @map("category_id")
+  date_time DateTime
+  is_canceled Boolean @default(false)
+  stock_status StockStatus @default(instock)
+  category Category @relation(fields: [category_id], references: [id])
+  category_id Int
   cancel String[]
   paid String[]
   pending String[]
   wait_list String[]
   confirm String[]
-  stockQuantity Int @default(13) @map("stock_quantity")
+  stock_quantity Int @default(13)
 
   orders OrderProduct[]
 
@@ -61,8 +61,6 @@ model Category {
   id Int @id @default(autoincrement())
 
   name String
-  slug String @unique
-
   products Product[]
 
   @@map("category")
@@ -70,8 +68,8 @@ model Category {
 
 model Report {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   date DateTime
   cash Float
@@ -80,9 +78,9 @@ model Report {
   revenue Float
   profit Float
   beg Float
-  begSum Float @map("beg_sum")
+  beg_sum Float
   adv Float
-  advSum Float @map("adv_sum")
+  adv_sum Float
   students Float
   completed Boolean
   stripe String?
@@ -94,30 +92,30 @@ model Report {
 
 model ReportCost {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   name String
   sum Float
   date DateTime
 
-  report Report @relation(fields: [reportId], references: [id])
-  reportId Int @map("report_id")
+  report Report @relation(fields: [report_id], references: [id])
+  report_id Int
 
   @@map("cost")
 }
 
 model Order {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  customer User @relation(fields: [customerId], references: [id])
-  customerId Int @map("customer_id")
-  items OrderProduct[]
-  stripeId String? @map("stripe_id")
+  customer User @relation(fields: [customer_id], references: [id])
+  customer_id Int
+  line_items OrderProduct[]
+  stripe_id String?
   date String
-  paymentMethod PaymentMethod? @map("payment_method")
+  payment_method PaymentMethod?
   coupons Coupon[]
   status OrderStatus
   total Float
@@ -128,31 +126,31 @@ model Order {
 
 model OrderProduct {
   id Int @id @default(autoincrement())
-  order Order @relation(fields: [orderId], references: [id])
-  orderId Int @map("order_id")
-  product Product @relation(fields: [productId], references: [id])
-  productId Int @map("product_id")
+  order Order @relation(fields: [order_id], references: [id])
+  order_id Int
+  product Product @relation(fields: [product_id], references: [id])
+  product_id Int
   subtotal Float
   total Float
   quantity Int
 
-  @@unique([orderId, productId])
+  @@unique([order_id, product_id])
   @@map("order_product")
 }
 
 model Coupon {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   code String @unique
   amount Float
-  discountType DiscountType
+  discount_type DiscountType
   description String?
-  dateExpires DateTime? @map("date_expires")
-  usageCount Int
-  individualUse Boolean @map("individual_use")
-  usageLimit Int @map("usage_limit")
+  date_expires DateTime?
+  usage_count Int
+  individual_use Boolean
+  usage_limit Int
   product_categories Int[]
   exc_cat Int[]
   used_by Int[]
