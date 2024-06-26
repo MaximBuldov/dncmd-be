@@ -1,9 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { OrderService } from './order.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Response
+} from '@nestjs/common';
+import { Role } from '@prisma/client';
+import { Response as Res } from 'express';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderService } from './order.service';
 
-@Controller('order')
+@Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
@@ -12,9 +26,20 @@ export class OrderController {
     return this.orderService.create(createOrderDto);
   }
 
+  @Auth()
+  @Roles(Role.administrator)
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('per_page') per_page: number = 10,
+    @Response() res: Res
+  ) {
+    const [orders, total] = await this.orderService.findAll({
+      page,
+      per_page
+    });
+
+    return res.set({ Total: total }).json(orders);
   }
 
   @Get(':id')

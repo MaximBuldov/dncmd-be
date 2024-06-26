@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrderService {
+  constructor(private prisma: PrismaService) {}
   create(createOrderDto: CreateOrderDto) {
     return 'This action adds a new order';
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAll({ per_page, page }: any) {
+    const skip = (+page - 1) * +per_page;
+
+    return await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        take: +per_page,
+        skip,
+        orderBy: { created_at: 'desc' }
+      }),
+      this.prisma.order.count()
+    ]);
   }
 
   findOne(id: number) {

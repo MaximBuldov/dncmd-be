@@ -1,8 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { returnUserObject } from './return-user.object';
+
+interface IFindAll {
+  page?: number;
+  per_page?: number;
+  search?: string;
+}
 
 @Injectable()
 export class UserService {
@@ -12,13 +19,34 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return this.prisma.user.findMany({
-      where: {
-        role: 'customer'
-      },
-      select: returnUserObject
-    });
+  async findAll({ page, per_page, search }: IFindAll) {
+    const skip = (+page - 1) * +per_page;
+    const where: Prisma.UserWhereInput = {
+      role: 'customer',
+      OR: [
+        {
+          last_name: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        },
+        {
+          first_name: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        }
+      ]
+    };
+    return await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        take: +per_page,
+        skip,
+        orderBy: { created_at: 'desc' }
+      }),
+      this.prisma.user.count({ where })
+    ]);
   }
 
   findOne(id: number) {

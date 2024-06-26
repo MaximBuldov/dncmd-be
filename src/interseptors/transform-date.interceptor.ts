@@ -16,29 +16,38 @@ dayjs.extend(timezone);
 @Injectable()
 export class TransformDateInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(
-      map((data) => {
-        return this.transformDates(data);
-      })
-    );
+    return next.handle().pipe(map((data) => this.transformDates(data)));
   }
 
-  private transformDates(data: any): any {
-    if (Array.isArray(data)) {
-      return data.map((item) => this.transformDates(item));
-    } else if (typeof data === 'object' && data !== null) {
-      const transformedObject = { ...data };
-      for (const key in transformedObject) {
-        if (transformedObject[key] instanceof Date) {
-          transformedObject[key] = dayjs(transformedObject[key])
-            .tz('America/Los_Angeles')
-            .format();
-        } else if (typeof transformedObject[key] === 'object') {
-          transformedObject[key] = this.transformDates(transformedObject[key]);
-        }
-      }
-      return transformedObject;
+  private transformDates(data: any, seen = new WeakSet()): any {
+    if (data === null || typeof data !== 'object') {
+      return data;
     }
-    return data;
+
+    if (seen.has(data)) {
+      return data;
+    }
+
+    seen.add(data);
+
+    if (Array.isArray(data)) {
+      return data.map((item) => this.transformDates(item, seen));
+    }
+
+    const transformedObject = { ...data };
+    for (const key in transformedObject) {
+      if (transformedObject[key] instanceof Date) {
+        transformedObject[key] = dayjs(transformedObject[key])
+          .tz('America/Los_Angeles')
+          .format();
+      } else {
+        transformedObject[key] = this.transformDates(
+          transformedObject[key],
+          seen
+        );
+      }
+    }
+
+    return transformedObject;
   }
 }

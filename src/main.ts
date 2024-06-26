@@ -8,7 +8,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformDateInterceptor());
   app.setGlobalPrefix('api');
-  app.enableCors();
+  app.enableCors({
+    exposedHeaders: 'Total'
+  });
   await app.listen(4200);
 }
 bootstrap();
