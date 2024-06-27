@@ -1,12 +1,14 @@
 import { Role } from '@prisma/client';
+import { Transform } from 'class-transformer';
 import {
-  IsDateString,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
   MinLength
 } from 'class-validator';
+import * as dayjs from 'dayjs';
 
 export enum UserRole {
   Admin = 'admin',
@@ -38,7 +40,8 @@ export class AuthDto {
   instagram: string;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsDate()
+  @Transform(({ value }) => dayjs(value).toDate())
   dob: Date;
 
   @IsNotEmpty()

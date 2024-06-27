@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   Query,
   Response
 } from '@nestjs/common';
@@ -13,7 +12,7 @@ import { Role } from '@prisma/client';
 import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
@@ -21,12 +20,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
-  @Auth()
   @Roles(Role.administrator)
   @Get()
   async findAll(
@@ -48,8 +41,9 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Auth()
+  @Patch()
+  update(@CurrentUser('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 

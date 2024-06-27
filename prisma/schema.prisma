@@ -145,16 +145,17 @@ model Coupon {
 
   code String @unique
   amount Float
-  discount_type DiscountType
+  discount_type DiscountType @default(fixed_cart)
   description String?
   date_expires DateTime?
-  usage_count Int
-  individual_use Boolean
+  usage_count Int? @default(0)
+  individual_use Boolean @default(true)
   usage_limit Int
-  product_categories Int[]
-  exc_cat Int[]
-  used_by Int[]
-  allowed_users Int[]
+  usage_limit_per_user Int
+  product_categories Int[] @default([])
+  exc_cat Int[] @default([])
+  used_by Int[] @default([])
+  allowed_users Int[] @default([])
 
   orders Order[]
 

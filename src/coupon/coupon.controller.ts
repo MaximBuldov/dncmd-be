@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common';
+import { Role } from '@prisma/client';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -7,9 +18,11 @@ import { UpdateCouponDto } from './dto/update-coupon.dto';
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
+  @Auth()
+  @Roles(Role.administrator)
   @Post()
-  create(@Body() createCouponDto: CreateCouponDto) {
-    return this.couponService.create(createCouponDto);
+  async create(@Body() createCouponDto: CreateCouponDto) {
+    return await this.couponService.create(createCouponDto);
   }
 
   @Get()

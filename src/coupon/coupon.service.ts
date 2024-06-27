@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'prisma.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 
 @Injectable()
 export class CouponService {
-  create(createCouponDto: CreateCouponDto) {
-    return 'This action adds a new coupon';
+  constructor(private prisma: PrismaService) {}
+
+  async create(data: CreateCouponDto) {
+    return await this.prisma.coupon.create({
+      data: {
+        ...data,
+        allowed_users: [1]
+      }
+    });
   }
 
   findAll() {
