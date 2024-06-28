@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post
@@ -10,6 +11,7 @@ import {
 import { Role } from '@prisma/client';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -25,9 +27,12 @@ export class CouponController {
     return await this.couponService.create(createCouponDto);
   }
 
+  @Auth()
+  @Roles(Role.customer)
+  @HttpCode(200)
   @Get()
-  findAll() {
-    return this.couponService.findAll();
+  findMyl(@CurrentUser('id') id: number) {
+    return this.couponService.findMy(id);
   }
 
   @Get(':id')

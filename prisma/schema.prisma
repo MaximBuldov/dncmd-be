@@ -152,6 +152,7 @@ model Coupon {
   individual_use Boolean @default(true)
   usage_limit Int
   usage_limit_per_user Int
+  isExceeded Boolean? @default(false)
   product_categories Int[] @default([])
   exc_cat Int[] @default([])
   used_by Int[] @default([])

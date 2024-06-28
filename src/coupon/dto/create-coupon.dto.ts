@@ -46,6 +46,10 @@ export class CreateCouponDto {
   usage_limit_per_user: number;
 
   @IsOptional()
+  @IsBoolean()
+  isExceeded: boolean;
+
+  @IsOptional()
   @IsArray()
   product_categories: number[] = [];
 

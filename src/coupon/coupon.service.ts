@@ -8,16 +8,21 @@ export class CouponService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateCouponDto) {
-    return await this.prisma.coupon.create({
-      data: {
-        ...data,
-        allowed_users: [1]
-      }
-    });
+    return await this.prisma.coupon.create({ data });
   }
 
-  findAll() {
-    return `This action returns all coupon`;
+  async findMy(id: number) {
+    return await this.prisma.coupon.findMany({
+      where: {
+        allowed_users: {
+          has: id
+        },
+        isExceeded: false,
+        date_expires: {
+          gte: new Date()
+        }
+      }
+    });
   }
 
   findOne(id: number) {
