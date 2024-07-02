@@ -2,19 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserQueryDto } from './dto/user-query.dto';
 import { returnUserObject } from './return-user.object';
-
-interface IFindAll {
-  page?: number;
-  per_page?: number;
-  search?: string;
-}
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll({ page, per_page, search }: IFindAll) {
+  async findAll({ page, per_page, search }: UserQueryDto) {
     const skip = (+page - 1) * +per_page;
     const where: Prisma.UserWhereInput = {
       role: 'customer',

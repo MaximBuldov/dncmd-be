@@ -9,6 +9,7 @@ import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 import { ReportModule } from './report/report.module';
 import { UserModule } from './user/user.module';
+import { OrderProductModule } from './order-product/order-product.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './user/user.module';
     ReportModule,
     OrderModule,
     CouponModule,
-    CategoryModule
+    CategoryModule,
+    OrderProductModule
   ],
   controllers: [AppController],
   providers: [AppService]

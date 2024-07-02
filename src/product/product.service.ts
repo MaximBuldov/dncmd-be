@@ -17,22 +17,36 @@ export class ProductService {
   }
 
   async findAll(month?: string) {
-    if (month) {
-      return await this.prisma.product.findMany({
-        where: {
+    const where = month
+      ? {
           date_time: {
             gte: dayjs(month, 'YYYY-MM').startOf('month').toDate(),
             lte: dayjs(month, 'YYYY-MM').endOf('month').toDate()
           }
-        },
-        orderBy: {
-          created_at: 'desc'
         }
-      });
-    }
+      : undefined;
+
     return await this.prisma.product.findMany({
+      where,
       orderBy: {
         created_at: 'desc'
+      },
+      include: {
+        orders: {
+          include: {
+            order: {
+              select: {
+                status: true
+              }
+            },
+            user: {
+              select: {
+                first_name: true,
+                last_name: true
+              }
+            }
+          }
+        }
       }
     });
   }
@@ -48,7 +62,7 @@ export class ProductService {
     });
   }
 
-  remove(id: number) {
-    return this.prisma.product.delete({ where: { id } });
+  async remove(id: number) {
+    return await this.prisma.product.delete({ where: { id } });
   }
 }

@@ -29,6 +29,8 @@ model User {
 
   orders Order[]
 
+  products OrderProduct[]
+
   @@map("user")
   @@unique([id])
 }
@@ -43,14 +45,11 @@ model Product {
   date_time DateTime
   is_canceled Boolean @default(false)
   stock_status StockStatus @default(instock)
+  stock_quantity Int @default(13)
+  wait_list Int[] @default([])
+
   category Category @relation(fields: [category_id], references: [id])
   category_id Int
-  cancel String[]
-  paid String[]
-  pending String[]
-  wait_list String[]
-  confirm String[]
-  stock_quantity Int @default(13)
 
   orders OrderProduct[]
 
@@ -114,10 +113,10 @@ model Order {
   customer_id Int
   line_items OrderProduct[]
   stripe_id String?
-  date String
   payment_method PaymentMethod?
   coupons Coupon[]
-  status OrderStatus
+  status OrderStatus @default(processing)
+  subtotal Float
   total Float
   note String?
 
@@ -126,15 +125,22 @@ model Order {
 
 model OrderProduct {
   id Int @id @default(autoincrement())
+
   order Order @relation(fields: [order_id], references: [id])
   order_id Int
+
   product Product @relation(fields: [product_id], references: [id])
   product_id Int
+
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+
+  productStatus ProductStatus?
   subtotal Float
   total Float
   quantity Int
 
-  @@unique([order_id, product_id])
+  @@unique([order_id, product_id, user_id])
   @@map("order_product")
 }
 
@@ -175,6 +181,11 @@ enum OrderStatus {
   pending
   cancelled
   processing
+}
+
+enum ProductStatus {
+  confirmed
+  canceled
 }
 
 enum PaymentMethod {

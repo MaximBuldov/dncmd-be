@@ -5,7 +5,7 @@ import { TransformDateInterceptor } from './interseptors/transform-date.intercep
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new TransformDateInterceptor());
   app.setGlobalPrefix('api');
   app.enableCors({

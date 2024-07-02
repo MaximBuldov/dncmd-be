@@ -13,7 +13,9 @@ import { Role } from '@prisma/client';
 import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderQueryDto } from './dto/order-query.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderService } from './order.service';
 
@@ -21,23 +23,19 @@ import { OrderService } from './order.service';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @Auth()
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  create(
+    @Body() createOrderDto: CreateOrderDto,
+    @CurrentUser('id') id: string
+  ) {
+    return this.orderService.create(createOrderDto, +id);
   }
 
   @Auth()
-  @Roles(Role.administrator)
   @Get()
-  async findAll(
-    @Query('page') page: number = 1,
-    @Query('per_page') per_page: number = 10,
-    @Response() res: Res
-  ) {
-    const [orders, total] = await this.orderService.findAll({
-      page,
-      per_page
-    });
+  async findAll(@Query() query: OrderQueryDto, @Response() res: Res) {
+    const [orders, total] = await this.orderService.findAll(query);
 
     return res.set({ Total: total }).json(orders);
   }
@@ -47,11 +45,17 @@ export class OrderController {
     return this.orderService.findOne(+id);
   }
 
+  @Auth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto
+  ) {
     return this.orderService.update(+id, updateOrderDto);
   }
 
+  @Auth()
+  @Roles(Role.administrator)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);

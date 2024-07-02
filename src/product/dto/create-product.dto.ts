@@ -35,27 +35,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  cancel?: string[] = [];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  paid?: string[] = [];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  pending?: string[] = [];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  wait_list?: string[] = [];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  confirm?: string[] = [];
+  wait_list?: number[] = [];
 
   @IsInt()
   @IsOptional()
