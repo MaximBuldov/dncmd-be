@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OrderStatus, Prisma, User } from '@prisma/client';
+import * as dayjs from 'dayjs';
 import { PrismaService } from 'prisma.service';
 import { MailService } from 'src/mail/mail.service';
+import { ProductService } from 'src/product/product.service';
 import Stripe from 'stripe';
 import { CreateIntentDto } from './dto/create-intent.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -14,7 +16,8 @@ export class OrderService {
 
   constructor(
     private prisma: PrismaService,
-    private mailService: MailService
+    private mailService: MailService,
+    private productService: ProductService
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
@@ -23,13 +26,12 @@ export class OrderService {
     const total = data.line_items.reduce((acc, el) => acc + el.total, 0);
     const subtotal = data.line_items.reduce((acc, el) => acc + el.subtotal, 0);
 
-    if (total < 0.5) throw new Error('Amount must be at least 50 cents');
-
     const order = await this.prisma.order.create({
       data: {
         ...data,
         total,
         subtotal,
+        stripe_id: data.stripe_id || dayjs().toString(),
         customer: {
           connect: { id: +user.id }
         },
@@ -50,7 +52,8 @@ export class OrderService {
           include: {
             product: {
               select: {
-                name: true
+                name: true,
+                date_time: true
               }
             }
           }
@@ -58,9 +61,14 @@ export class OrderService {
       }
     });
 
-    [process.env.EMAIL, user.email].forEach(async (email) => {
+    [process.env.EMAIL, user.email].forEach((email) => {
       this.mailService.newOrder(email, order, user);
     });
+
+    this.productService.updateProductsAmount(
+      order.line_items.map((el) => el.product_id),
+      'decrement'
+    );
 
     return order;
   }
@@ -134,10 +142,6 @@ export class OrderService {
     ]);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
   async update(id: number, data: UpdateOrderDto) {
     const order = await this.prisma.order.update({
       where: { id },
@@ -162,6 +166,13 @@ export class OrderService {
       }
     });
 
+    if (data.status === 'cancelled') {
+      this.productService.updateProductsAmount(
+        order.line_items.map((el) => el.product_id),
+        'increment'
+      );
+    }
+
     return order;
   }
 
@@ -177,11 +188,19 @@ export class OrderService {
 
   async remove(id: number) {
     const [order] = await Promise.all([
-      this.prisma.order.delete({ where: { id } }),
+      this.prisma.order.delete({
+        where: { id },
+        include: { line_items: true }
+      }),
       this.prisma.orderProduct.deleteMany({
         where: { order_id: id }
       })
     ]);
+
+    this.productService.updateProductsAmount(
+      order.line_items.map((el) => el.product_id),
+      'increment'
+    );
 
     return order;
   }

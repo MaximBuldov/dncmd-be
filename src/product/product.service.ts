@@ -63,11 +63,7 @@ export class ProductService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
-  }
-
-  update(id: number, data: UpdateProductDto) {
+  async update(id: number, data: UpdateProductDto) {
     return this.prisma.product.update({
       where: { id },
       data
@@ -76,5 +72,16 @@ export class ProductService {
 
   async remove(id: number) {
     return await this.prisma.product.delete({ where: { id } });
+  }
+
+  async updateProductsAmount(ids: number[], action: 'increment' | 'decrement') {
+    await this.prisma.product.updateMany({
+      where: { id: { in: ids } },
+      data: {
+        stock_quantity: {
+          [action]: 1
+        }
+      }
+    });
   }
 }

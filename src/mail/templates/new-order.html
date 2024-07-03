@@ -20,8 +20,15 @@
         padding: 10px;
         border-bottom: 1px solid #ccc;
         text-align: center;
+        font-size: 22px;
       }
-      .order-info,
+      .order-info {
+        text-align: center;
+      }
+      h3,
+      p {
+        margin: 0;
+      }
       .customer-info,
       .product-list {
         margin-top: 20px;
@@ -48,18 +55,15 @@
   <body>
     <div class="container">
       <h1>New Order: #{{orderId}}</h1>
-      <div class="order-info">
-        <p><strong>Order:</strong> #{{orderId}}</p>
-        <p><strong>Date:</strong> {{orderDate}}</p>
-      </div>
+      <div class="order-info">{{orderDate}}</div>
       <div class="customer-info">
-        <h2>Customer Info</h2>
+        <h3>Customer Info</h3>
         <p><strong>Name:</strong> {{customer.name}}</p>
         <p><strong>Email:</strong> {{customer.email}}</p>
         <p><strong>Phone:</strong> {{customer.phone}}</p>
       </div>
       <div class="product-list">
-        <h2>Classes</h2>
+        <h3>Classes</h3>
         <table>
           <thead>
             <tr>
@@ -73,7 +77,7 @@
             <tr>
               <td>{{this.name}}</td>
               <td>{{this.date_time}}</td>
-              <td>{{this.total}}</td>
+              <td>${{this.total}}</td>
             </tr>
             {{/each}}
           </tbody>

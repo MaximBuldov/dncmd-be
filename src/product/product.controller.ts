@@ -40,11 +40,6 @@ export class ProductController {
     return this.productService.findAll(user, month);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
-  }
-
   @Auth()
   @Roles(Role.administrator)
   @Patch(':id')

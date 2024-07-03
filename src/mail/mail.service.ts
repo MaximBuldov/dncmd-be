@@ -1,16 +1,14 @@
 // src/mail/mail.service.ts
 import { Injectable } from '@nestjs/common';
-import { Order, OrderProduct, User } from '@prisma/client';
+import { Order, OrderProduct, Product, User } from '@prisma/client';
 import * as sgMail from '@sendgrid/mail';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
 import { join } from 'path';
 
 interface OrderProductWithName extends OrderProduct {
-  product: {
-    name: string;
-  };
+  product: Pick<Product, 'name' | 'date_time'>;
 }
 
 interface OrderWithItems extends Order {
@@ -55,7 +53,9 @@ export class MailService {
           email: user.email
         },
         products: order.line_items.map((el) => ({
-          name: el.product.name
+          name: el.product.name,
+          date_time: dayjs(el.product.date_time).format('MM/DD/YYYY ha'),
+          total: el.total === el.subtotal ? el.total : el.subtotal
         })),
         subtotal: `$${order.subtotal}`,
         discount: `$${order.subtotal - order.total}`,

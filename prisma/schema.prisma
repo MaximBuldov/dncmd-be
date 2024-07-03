@@ -44,7 +44,6 @@ model Product {
   price Float
   date_time DateTime
   is_canceled Boolean @default(false)
-  stock_status StockStatus @default(instock)
   stock_quantity Int @default(13)
   wait_list Int[] @default([])
 
@@ -197,11 +196,5 @@ enum PaymentMethod {
 enum Role {
   administrator
   customer
-}
-
-enum StockStatus {
-  instock
-  outofstock
-  onbackorder
 }
 
