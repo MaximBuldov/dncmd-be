@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <title>New Order - Dance Mode</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      h1 {
+        background-color: #f7f7f7;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+      }
+      .order-info,
+      .customer-info,
+      .product-list {
+        margin-top: 20px;
+      }
+      .product-list table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .product-list th,
+      .product-list td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      .totals {
+        margin-top: 20px;
+        text-align: right;
+      }
+      .totals div {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>New Order: #{{orderId}}</h1>
+      <div class="order-info">
+        <p><strong>Order:</strong> #{{orderId}}</p>
+        <p><strong>Date:</strong> {{orderDate}}</p>
+      </div>
+      <div class="customer-info">
+        <h2>Customer Info</h2>
+        <p><strong>Name:</strong> {{customer.name}}</p>
+        <p><strong>Email:</strong> {{customer.email}}</p>
+        <p><strong>Phone:</strong> {{customer.phone}}</p>
+      </div>
+      <div class="product-list">
+        <h2>Classes</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date and Time</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each products}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.date_time}}</td>
+              <td>{{this.total}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <div class="totals">
+        <div><strong>Subtotal:</strong> {{subtotal}}</div>
+        <div><strong>Discount:</strong> {{discount}}</div>
+        <div><strong>Total:</strong> {{total}}</div>
+      </div>
+    </div>
+  </body>
+</html>

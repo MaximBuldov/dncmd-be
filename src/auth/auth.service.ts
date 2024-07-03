@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import { PrismaService } from 'prisma.service';
+import { MailService } from 'src/mail/mail.service';
 import { AuthDto } from './dto/auth.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -15,7 +16,8 @@ import { LoginDto } from './dto/login.dto';
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private jwt: JwtService
+    private jwt: JwtService,
+    private mailService: MailService
   ) {}
 
   async users() {
@@ -55,6 +57,10 @@ export class AuthService {
         password: await hash(password)
       }
     });
+
+    await this.mailService.welcome(user.email, user.first_name);
+
+    await this.mailService.newStudent(user);
 
     return await this.returnUserFields(user);
   }

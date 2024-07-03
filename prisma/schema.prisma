@@ -112,7 +112,7 @@ model Order {
   customer User @relation(fields: [customer_id], references: [id])
   customer_id Int
   line_items OrderProduct[]
-  stripe_id String?
+  stripe_id String? @unique
   payment_method PaymentMethod?
   coupons Coupon[]
   status OrderStatus @default(processing)

@@ -10,6 +10,7 @@ import { ProductModule } from './product/product.module';
 import { ReportModule } from './report/report.module';
 import { UserModule } from './user/user.module';
 import { OrderProductModule } from './order-product/order-product.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { OrderProductModule } from './order-product/order-product.module';
     OrderModule,
     CouponModule,
     CategoryModule,
-    OrderProductModule
+    OrderProductModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService]
