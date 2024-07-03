@@ -6,19 +6,17 @@ import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 export class OrderProductService {
   constructor(private prisma: PrismaService) {}
 
-  async update(id: number, data: UpdateOrderProductDto) {
+  async update(id: number, { productStatus }: UpdateOrderProductDto) {
     return await this.prisma.orderProduct.update({
       where: { id },
-      data
+      data: { productStatus }
     });
   }
 
-  async updateMany(data: UpdateOrderProductDto) {
+  async updateMany({ productStatus, ids }: UpdateOrderProductDto) {
     return await this.prisma.orderProduct.updateMany({
-      where: { id: { in: data.ids } },
-      data: {
-        productStatus: data.productStatus
-      }
+      where: { id: { in: ids } },
+      data: { productStatus }
     });
   }
 }

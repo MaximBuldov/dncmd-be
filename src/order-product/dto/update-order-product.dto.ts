@@ -1,5 +1,11 @@
 import { ProductStatus } from '@prisma/client';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString
+} from 'class-validator';
 
 export class UpdateOrderProductDto {
   @IsOptional()
@@ -10,4 +16,8 @@ export class UpdateOrderProductDto {
   @IsOptional()
   @IsArray()
   ids?: number[];
+
+  @IsOptional()
+  @IsBoolean()
+  isDeadline?: boolean;
 }

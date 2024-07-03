@@ -38,7 +38,14 @@ export class OrderService {
     });
   }
 
-  async findAll({ per_page, page, customer, before, after }: OrderQueryDto) {
+  async findAll({
+    per_page,
+    page,
+    customer,
+    before,
+    after,
+    status
+  }: OrderQueryDto) {
     const skip = (+page - 1) * +per_page;
 
     const where: Prisma.OrderWhereInput = {
@@ -46,6 +53,9 @@ export class OrderService {
       created_at: {
         lte: before,
         gte: after
+      },
+      status: {
+        in: status
       }
     };
 

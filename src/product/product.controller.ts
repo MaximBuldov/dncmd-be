@@ -8,9 +8,10 @@ import {
   Post,
   Query
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
@@ -33,9 +34,10 @@ export class ProductController {
     return this.productService.createMany(createProductDto);
   }
 
+  @Auth()
   @Get()
-  findAll(@Query('month') month?: string) {
-    return this.productService.findAll(month);
+  findAll(@CurrentUser() user: User, @Query('month') month?: string) {
+    return this.productService.findAll(user, month);
   }
 
   @Get(':id')
