@@ -55,7 +55,7 @@ export class MailService {
         products: order.line_items.map((el) => ({
           name: el.product.name,
           date_time: dayjs(el.product.date_time).format('MM/DD/YYYY ha'),
-          total: el.total === el.subtotal ? el.total : el.subtotal
+          total: el.total
         })),
         subtotal: `$${order.subtotal}`,
         discount: `$${order.subtotal - order.total}`,
@@ -86,6 +86,18 @@ export class MailService {
         email: user.email
       },
       'new-user'
+    );
+  }
+
+  async coupon(user: Pick<User, 'email' | 'first_name'>, code: string) {
+    await this.sendMail(
+      user.email,
+      'New Coupon - Dance Mode',
+      {
+        name: user.first_name,
+        code
+      },
+      'coupon'
     );
   }
 }

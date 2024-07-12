@@ -1,10 +1,8 @@
-import { StockStatus } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsDate,
-  IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
@@ -25,9 +23,6 @@ export class CreateProductDto {
   @IsBoolean()
   @IsOptional()
   is_canceled?: boolean;
-
-  @IsEnum(StockStatus)
-  stock_status: StockStatus = StockStatus.instock;
 
   @IsNumber()
   category_id: number;

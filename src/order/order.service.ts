@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OrderStatus, Prisma, User } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'prisma.service';
+import { CouponService } from 'src/coupon/coupon.service';
 import { MailService } from 'src/mail/mail.service';
 import { ProductService } from 'src/product/product.service';
 import Stripe from 'stripe';
@@ -17,13 +18,16 @@ export class OrderService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
-    private productService: ProductService
+    private productService: ProductService,
+    private couponService: CouponService
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
 
   async create(data: CreateOrderDto, user: User) {
-    const total = data.line_items.reduce((acc, el) => acc + el.total, 0);
+    const coupons = data.coupons.reduce((acc, el) => acc + el.amount, 0);
+    const total =
+      data.line_items.reduce((acc, el) => acc + el.total, 0) - coupons;
     const subtotal = data.line_items.reduce((acc, el) => acc + el.subtotal, 0);
 
     const order = await this.prisma.order.create({
@@ -44,7 +48,7 @@ export class OrderService {
           }
         },
         coupons: {
-          connect: data.coupons.map((el) => ({ id: el.id }))
+          connect: data.coupons.map((el) => ({ code: el.code }))
         }
       },
       include: {
@@ -69,6 +73,10 @@ export class OrderService {
       order.line_items.map((el) => el.product_id),
       'decrement'
     );
+
+    data.coupons.forEach((coupon) => {
+      this.couponService.useCoupon(user.id, coupon, 'connect');
+    });
 
     return order;
   }
@@ -124,7 +132,8 @@ export class OrderService {
             include: {
               product: {
                 select: {
-                  name: true
+                  name: true,
+                  date_time: true
                 }
               }
             }
@@ -190,7 +199,7 @@ export class OrderService {
     const [order] = await Promise.all([
       this.prisma.order.delete({
         where: { id },
-        include: { line_items: true }
+        include: { line_items: true, coupons: true }
       }),
       this.prisma.orderProduct.deleteMany({
         where: { order_id: id }
@@ -201,6 +210,14 @@ export class OrderService {
       order.line_items.map((el) => el.product_id),
       'increment'
     );
+
+    if (order.coupons[0]) {
+      this.couponService.useCoupon(
+        order.customer_id,
+        order.coupons[0],
+        'disconnect'
+      );
+    }
 
     return order;
   }

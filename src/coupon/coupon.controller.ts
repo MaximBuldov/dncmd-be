@@ -6,14 +6,18 @@ import {
   HttpCode,
   Param,
   Patch,
-  Post
+  Post,
+  Query,
+  Response
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
+import { CouponQueryDto } from './dto/query-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 
 @Controller('coupon')
@@ -28,25 +32,43 @@ export class CouponController {
   }
 
   @Auth()
-  @Roles(Role.customer)
+  @Roles(Role.administrator)
   @HttpCode(200)
   @Get()
-  findMyl(@CurrentUser('id') id: number) {
-    return this.couponService.findMy(id);
+  async findAll(@Query() query: CouponQueryDto, @Response() res: Res) {
+    const [data, total] = await this.couponService.findAll(query);
+
+    return res.set({ Total: total }).json(data);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.couponService.findOne(+id);
+  @Auth()
+  @Roles(Role.customer)
+  @HttpCode(200)
+  @Get('my')
+  async findMy(@CurrentUser('id') id: number) {
+    return await this.couponService.findMy(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCouponDto: UpdateCouponDto) {
-    return this.couponService.update(+id, updateCouponDto);
+  @Auth()
+  @Post('validate')
+  async findOne(@CurrentUser('id') id: string, @Body('code') code: string) {
+    return this.couponService.findOne(+id, code);
   }
 
+  @Auth()
+  @Roles(Role.administrator)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.couponService.remove(+id);
+  }
+
+  @Auth()
+  @Roles(Role.administrator)
+  @Patch(':id')
+  async updateCoupon(
+    @Param('id') id: number,
+    @Body() updateCouponDto: UpdateCouponDto
+  ) {
+    return this.couponService.update(id, updateCouponDto);
   }
 }

@@ -28,8 +28,10 @@ model User {
   role Role @default(customer)
 
   orders Order[]
-
   products OrderProduct[]
+
+  used_coupons Coupon[] @relation("usedCoupons")
+  coupons Coupon[] @relation("allowedCoupons")
 
   @@map("user")
   @@unique([id])
@@ -153,15 +155,10 @@ model Coupon {
   discount_type DiscountType @default(fixed_cart)
   description String?
   date_expires DateTime?
-  usage_count Int? @default(0)
-  individual_use Boolean @default(true)
-  usage_limit Int
-  usage_limit_per_user Int
-  isExceeded Boolean? @default(false)
-  product_categories Int[] @default([])
   exc_cat Int[] @default([])
-  used_by Int[] @default([])
-  allowed_users Int[] @default([])
+  
+  used_by User[] @relation("usedCoupons")
+  allowed_users User[] @relation("allowedCoupons")
 
   orders Order[]
 

@@ -2,13 +2,13 @@ import { DiscountType } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
-  IsBoolean,
   IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString
+  IsString,
+  Min
 } from 'class-validator';
 import * as dayjs from 'dayjs';
 
@@ -19,6 +19,7 @@ export class CreateCouponDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @Min(1)
   amount: number;
 
   @IsEnum(DiscountType)
@@ -31,27 +32,6 @@ export class CreateCouponDto {
   @IsDate()
   @Transform(({ value }) => dayjs(value).toDate())
   date_expires: Date;
-
-  @IsOptional()
-  @IsNumber()
-  usage_count: number = 0;
-
-  @IsBoolean()
-  individual_use: boolean = true;
-
-  @IsNumber()
-  usage_limit: number;
-
-  @IsNumber()
-  usage_limit_per_user: number;
-
-  @IsOptional()
-  @IsBoolean()
-  isExceeded: boolean;
-
-  @IsOptional()
-  @IsArray()
-  product_categories: number[] = [];
 
   @IsOptional()
   @IsArray()

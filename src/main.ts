@@ -1,7 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { TransformDateInterceptor } from './interseptors/transform-date.interceptor';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +14,6 @@ async function bootstrap() {
   app.enableCors({
     exposedHeaders: 'Total'
   });
-  await app.listen(4200);
+  await app.listen(process.env.PORT || 4200);
 }
 bootstrap();

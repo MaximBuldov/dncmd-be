@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: dancemode
+      POSTGRES_PASSWORD: 88Jenny88*
+      POSTGRES_DB: dncmd
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  nestjs:
+    build: .
+    ports:
+      - '4200:4200'
+    environment:
+      DATABASE_URL: 'postgresql://dancemode:88Jenny88*@postgres:5432/dncmd'
+    depends_on:
+      - postgres
+
+  prisma:
+    image: node:18-alpine
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ['sh', '-c', 'npx prisma generate && npx prisma migrate deploy']
+    environment:
+      DATABASE_URL: 'postgresql://dancemode:88Jenny88*@postgres:5432/dncmd'
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
