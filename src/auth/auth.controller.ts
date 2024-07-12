@@ -50,4 +50,9 @@ export class AuthController {
   async getNewTokens(@Body() dto: RefreshTokenDto) {
     return await this.authService.getNewTokens(dto.refreshToken);
   }
+
+  @Get('test')
+  async test() {
+    return this.authService.test();
+  }
 }

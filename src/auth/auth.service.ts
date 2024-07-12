@@ -65,6 +65,10 @@ export class AuthService {
     return await this.returnUserFields(user);
   }
 
+  test() {
+    return `Hello! ${process.env.DATABASE_URL}`;
+  }
+
   private async issueTokens(userId: number) {
     const data = { id: userId };
 
