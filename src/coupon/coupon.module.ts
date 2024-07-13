@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'prisma.service';
 import { MailService } from 'src/mail/mail.service';
+import { PrismaService } from 'src/prisma.service';
 import { CouponController } from './coupon.controller';
 import { CouponService } from './coupon.service';
 

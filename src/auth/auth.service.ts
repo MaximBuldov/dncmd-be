@@ -7,8 +7,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { hash, verify } from 'argon2';
-import { PrismaService } from 'prisma.service';
 import { MailService } from 'src/mail/mail.service';
+import { PrismaService } from 'src/prisma.service';
 import { AuthDto } from './dto/auth.dto';
 import { LoginDto } from './dto/login.dto';
 

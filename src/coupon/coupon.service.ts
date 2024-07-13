@@ -4,8 +4,8 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { Coupon } from '@prisma/client';
-import { PrismaService } from 'prisma.service';
 import { MailService } from 'src/mail/mail.service';
+import { PrismaService } from 'src/prisma.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { CouponQueryDto } from './dto/query-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
