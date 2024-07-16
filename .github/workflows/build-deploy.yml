@@ -11,12 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 20.11.0
+      uses: actions/checkout@v3
 
     - name: Deploy to Hosting
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -24,4 +19,4 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: /
+        log-level: standard
