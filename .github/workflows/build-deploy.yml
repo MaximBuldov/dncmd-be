@@ -3,7 +3,7 @@ name: UI Prod
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
