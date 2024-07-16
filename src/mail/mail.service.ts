@@ -100,4 +100,16 @@ export class MailService {
       'coupon'
     );
   }
+
+  async resetPassword(user: User, link: string) {
+    await this.sendMail(
+      user.email,
+      'Reset Password - Dance Mode',
+      {
+        name: user.first_name,
+        link
+      },
+      'reset-password'
+    );
+  }
 }

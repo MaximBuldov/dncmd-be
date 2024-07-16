@@ -9,8 +9,10 @@ import { User } from '@prisma/client';
 import { hash, verify } from 'argon2';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
+import { returnUserObject } from 'src/user/return-user.object';
 import { AuthDto } from './dto/auth.dto';
 import { LoginDto } from './dto/login.dto';
+import { SetPasswordDto } from './dto/set-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -65,8 +67,30 @@ export class AuthService {
     return await this.returnUserFields(user);
   }
 
-  test() {
-    return `Hello! ${process.env.DATABASE_URL}`;
+  async resetPassword(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) throw new NotFoundException('Email not found');
+
+    const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
+    const link = `${process.env.UI_URL}/reset-password/${token}`;
+
+    await this.mailService.resetPassword(user, link);
+
+    return { message: 'Password reset link sent' };
+  }
+
+  async setPassword({ token, password }: SetPasswordDto) {
+    const { id } = await this.jwt.verifyAsync<{ id?: number }>(token);
+    if (!id) throw new UnauthorizedException('Invalid or expired token');
+
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: { password },
+      select: returnUserObject
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    return await this.returnUserFields(user);
   }
 
   private async issueTokens(userId: number) {
