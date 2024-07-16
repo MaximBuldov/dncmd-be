@@ -13,33 +13,33 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 20.11.0
+    # - name: Set up Node.js
+    #   uses: actions/setup-node@v2
+    #   with:
+    #     node-version: 20.11.0
 
-    - name: Install dependencies
-      run: yarn
+    # - name: Install dependencies
+    #   run: yarn
 
-    - name: Generate prisma client
-      run: npx prisma generate
+    # - name: Generate prisma client
+    #   run: npx prisma generate
 
-    - name: Set environment variables
-      run: |
-        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
-        echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
-        echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
-        echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
-        echo "EMAIL=${{ vars.PORT }}" >> .env.production.local
+    # - name: Set environment variables
+    #   run: |
+    #     echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
+    #     echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
+    #     echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
+    #     echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
+    #     echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
+    #     echo "EMAIL=${{ vars.PORT }}" >> .env.production.local
 
-    - name: Build
-      run: yarn build
+    # - name: Build
+    #   run: yarn build
 
     - name: Deploy to Hosting
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        password: ${{ secrets.FTP_PASSWORD }}SmYVi33qYO4b
         local-dir: ./dist/
