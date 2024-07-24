@@ -106,9 +106,10 @@ export class OrderService {
     customer,
     before,
     after,
-    status
+    status,
+    all
   }: OrderQueryDto) {
-    const skip = (+page - 1) * +per_page;
+    const skip = all ? undefined : (+page - 1) * +per_page;
 
     const where: Prisma.OrderWhereInput = {
       customer_id: customer,
@@ -124,7 +125,7 @@ export class OrderService {
     return await this.prisma.$transaction([
       this.prisma.order.findMany({
         where,
-        take: +per_page,
+        take: all ? undefined : +per_page,
         skip,
         orderBy: { created_at: 'desc' },
         include: {

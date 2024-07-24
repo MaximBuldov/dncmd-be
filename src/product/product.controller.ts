@@ -23,32 +23,37 @@ export class ProductController {
   @Auth()
   @Roles(Role.administrator)
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  async create(@Body() createProductDto: CreateProductDto) {
+    return await this.productService.create(createProductDto);
   }
 
   @Auth()
   @Roles(Role.administrator)
   @Post('/batch')
-  createMany(@Body() createProductDto: CreateProductDto[]) {
-    return this.productService.createMany(createProductDto);
+  async createMany(@Body() createProductDto: CreateProductDto[]) {
+    return await this.productService.createMany(createProductDto);
   }
 
   @Auth()
   @Get()
-  findAll(@CurrentUser() user: User, @Query('month') month?: string) {
-    return this.productService.findAll(user, month);
+  async findAll(@CurrentUser() user: User, @Query('month') month?: string) {
+    return await this.productService.findAll(user, month);
   }
 
   @Auth()
   @Roles(Role.administrator)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto
+  ) {
+    return await this.productService.update(+id, updateProductDto);
   }
 
+  @Auth()
+  @Roles(Role.administrator)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.productService.remove(+id);
   }
 }

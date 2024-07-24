@@ -16,4 +16,7 @@ export class UserQueryDto {
   @Transform(({ value }) => (value ? value : ''))
   @IsString()
   search?: string = '';
+
+  @IsOptional()
+  all?: boolean;
 }

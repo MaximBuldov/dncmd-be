@@ -6,11 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  Query,
-  Response
+  Query
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -21,31 +19,25 @@ import { ReportService } from './report.service';
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
+  @Auth()
+  @Roles(Role.administrator)
   @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportService.create(createReportDto);
+  async create(@Body() createReportDto: CreateReportDto) {
+    return await this.reportService.create(createReportDto);
   }
 
   @Auth()
   @Roles(Role.administrator)
   @Get()
-  async findAll(
-    @Query('from') from: string,
-    @Query('to') to: string,
-    @Response() res: Res
-  ) {
-    const [reports, total] = await this.reportService.findAll({
+  async findAll(@Query('from') from: string, @Query('to') to: string) {
+    return await this.reportService.findAll({
       from,
       to
     });
-    return res.set({ Total: total }).json(reports);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportService.findOne(+id);
-  }
-
+  @Auth()
+  @Roles(Role.administrator)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
     return this.reportService.update(+id, updateReportDto);

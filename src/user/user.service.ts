@@ -9,8 +9,8 @@ import { returnUserObject } from './return-user.object';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll({ page, per_page, search }: UserQueryDto) {
-    const skip = (+page - 1) * +per_page;
+  async findAll({ page, per_page, search, all }: UserQueryDto) {
+    const skip = all ? undefined : (+page - 1) * +per_page;
     const where: Prisma.UserWhereInput = {
       role: 'customer',
       OR: [
@@ -31,7 +31,7 @@ export class UserService {
     return await this.prisma.$transaction([
       this.prisma.user.findMany({
         where,
-        take: +per_page,
+        take: all ? undefined : +per_page,
         skip,
         orderBy: { created_at: 'desc' }
       }),

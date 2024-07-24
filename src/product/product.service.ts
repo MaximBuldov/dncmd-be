@@ -9,8 +9,15 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateProductDto) {
-    return this.prisma.product.create({ data });
+  async create({ wait_list, ...rest }: CreateProductDto) {
+    return this.prisma.product.create({
+      data: {
+        ...rest,
+        wait_list: {
+          connect: wait_list.map((id) => ({ id }))
+        }
+      }
+    });
   }
 
   async createMany(data: CreateProductDto[]) {
@@ -63,10 +70,15 @@ export class ProductService {
     }
   }
 
-  async update(id: number, data: UpdateProductDto) {
+  async update(id: number, { wait_list, ...rest }: UpdateProductDto) {
     return this.prisma.product.update({
       where: { id },
-      data
+      data: {
+        ...rest,
+        wait_list: {
+          set: wait_list.map((id) => ({ id }))
+        }
+      }
     });
   }
 

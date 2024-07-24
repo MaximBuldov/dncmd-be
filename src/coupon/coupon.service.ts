@@ -147,7 +147,8 @@ export class CouponService {
         orderBy: { created_at: 'desc' },
         include: {
           allowed_users: selectUser,
-          used_by: selectUser
+          used_by: selectUser,
+          orders: true
         }
       }),
       this.prisma.coupon.count()

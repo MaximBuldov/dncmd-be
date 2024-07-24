@@ -29,4 +29,7 @@ export class OrderQueryDto {
   @IsOptional()
   @IsArray()
   status?: OrderStatus[];
+
+  @IsOptional()
+  all?: boolean;
 }

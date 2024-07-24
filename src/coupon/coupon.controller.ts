@@ -52,14 +52,14 @@ export class CouponController {
   @Auth()
   @Post('validate')
   async findOne(@CurrentUser('id') id: string, @Body('code') code: string) {
-    return this.couponService.findOne(+id, code);
+    return await this.couponService.findOne(+id, code);
   }
 
   @Auth()
   @Roles(Role.administrator)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.couponService.remove(+id);
+    return await this.couponService.remove(+id);
   }
 
   @Auth()
@@ -69,6 +69,6 @@ export class CouponController {
     @Param('id') id: number,
     @Body() updateCouponDto: UpdateCouponDto
   ) {
-    return this.couponService.update(id, updateCouponDto);
+    return await this.couponService.update(id, updateCouponDto);
   }
 }

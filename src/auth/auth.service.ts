@@ -6,13 +6,15 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { hash, verify } from 'argon2';
+import * as bcrypt from 'bcrypt';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { returnUserObject } from 'src/user/return-user.object';
 import { AuthDto } from './dto/auth.dto';
 import { LoginDto } from './dto/login.dto';
 import { SetPasswordDto } from './dto/set-password.dto';
+
+const saltRounds = 10;
 
 @Injectable()
 export class AuthService {
@@ -44,7 +46,7 @@ export class AuthService {
     return await this.returnUserFields(user);
   }
 
-  async register({ email, dob, password, ...rest }: AuthDto) {
+  async register({ email, dob, password, confirm, ...rest }: AuthDto) {
     const oldUser = await this.prisma.user.findUnique({
       where: { email }
     });
@@ -56,7 +58,7 @@ export class AuthService {
         ...rest,
         email,
         dob: new Date(dob),
-        password: await hash(password)
+        password: await bcrypt.hash(password, saltRounds)
       }
     });
 
@@ -85,7 +87,7 @@ export class AuthService {
 
     const user = await this.prisma.user.update({
       where: { id },
-      data: { password },
+      data: { password: await bcrypt.hash(password, saltRounds) },
       select: returnUserObject
     });
     if (!user) throw new NotFoundException('User not found');
@@ -124,7 +126,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    const isValid = await verify(user.password, password);
+    const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) throw new UnauthorizedException('Invalid password');
 
