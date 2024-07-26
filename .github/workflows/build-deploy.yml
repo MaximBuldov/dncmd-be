@@ -13,33 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-    # - name: Set up Node.js
-    #   uses: actions/setup-node@v2
-    #   with:
-    #     node-version: 20.11.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.11.0
 
-    # - name: Install dependencies
-    #   run: yarn
+      - name: Install dependencies
+        run: npm run install
 
-    # - name: Generate prisma client
-    #   run: npx prisma generate
+      - name: Generate prisma client
+        run: npx prisma generate
 
-    # - name: Set environment variables
-    #   run: |
-    #     echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
-    #     echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
-    #     echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
-    #     echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
-    #     echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
-    #     echo "EMAIL=${{ vars.PORT }}" >> .env.production.local
+      - name: Set environment variables
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
+          echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
+          echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
+          echo "PORT=${{ vars.PORT }}" >> .env.production.local
 
-    # - name: Build
-    #   run: yarn build
+      - name: Build
+        run: npm run build
 
-    # - name: Deploy to Hosting
-    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-    #   with:
-    #     server: ${{ secrets.FTP_SERVER }}
-    #     username: ${{ secrets.FTP_USERNAME }}
-    #     password: ${{ secrets.FTP_PASSWORD }}
-    # local-dir: ./dist/
+      - name: Deploy to DigitalOcean
+        uses: digitalocean/action@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
