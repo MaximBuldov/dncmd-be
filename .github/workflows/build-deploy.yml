@@ -37,6 +37,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to DigitalOcean
-        uses: digitalocean/action@v2
+        uses: digitalocean/app_action@v1.1.5
         with:
+          app_name: dancemode
           token: ${{ secrets.DIGITALOCEAN_TOKEN }}
