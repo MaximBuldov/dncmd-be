@@ -14,6 +14,7 @@ async function bootstrap() {
   app.enableCors({
     exposedHeaders: 'Total'
   });
+
   await app.listen(process.env.PORT || 8080);
 }
 bootstrap();
