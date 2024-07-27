@@ -7,8 +7,10 @@ import {
   Query,
   Response
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserQueryDto } from './dto/user-query.dto';
@@ -18,13 +20,15 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Roles(Role.administrator)
+  @Auth()
+  @Roles(Role.administrator)
   @Get()
   async findAll(@Query() query: UserQueryDto, @Response() res: Res) {
     const [orders, total] = await this.userService.findAll(query);
     return res.set({ Total: total }).json(orders);
   }
 
+  @Auth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
