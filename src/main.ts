@@ -12,6 +12,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformDateInterceptor());
   app.setGlobalPrefix('api');
   app.enableCors({
+    origin: '*',
     exposedHeaders: 'Total'
   });
 
