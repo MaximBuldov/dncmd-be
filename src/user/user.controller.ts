@@ -43,8 +43,8 @@ export class UserController {
 
   @Auth()
   @Roles(Role.administrator)
-  @Delete()
-  remove(@CurrentUser('id') id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
 }
