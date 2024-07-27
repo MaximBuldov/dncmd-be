@@ -15,6 +15,7 @@ async function bootstrap() {
     origin: '*',
     exposedHeaders: 'Total'
   });
+
   await app.listen(process.env.PORT || 8080);
 }
 bootstrap();
