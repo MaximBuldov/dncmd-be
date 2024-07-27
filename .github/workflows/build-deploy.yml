@@ -13,31 +13,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 20.11.0
+
+      # - name: Install dependencies
+      #   run: npm install
+
+      # - name: Generate prisma client
+      #   run: npx prisma generate
+
+      # - name: Set environment variables
+      #   run: |
+      #     echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
+      #     echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
+      #     echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
+      #     echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
+      #     echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
+      #     echo "PORT=${{ vars.PORT }}" >> .env.production.local
+
+      # - name: Build
+      #   run: npm run build
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.1
         with:
-          node-version: 20.11.0
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Generate prisma client
-        run: npx prisma generate
-
-      - name: Set environment variables
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production.local
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production.local
-          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env.production.local
-          echo "SEND_GRID_API_KEY=${{ secrets.SEND_GRID_API_KEY }}" >> .env.production.local
-          echo "EMAIL=${{ vars.EMAIL }}" >> .env.production.local
-          echo "PORT=${{ vars.PORT }}" >> .env.production.local
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy to DigitalOcean
-        uses: digitalocean/app_action@v1.1.5
-        with:
-          app_name: dancemode
-          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd dncmd-be
+            git pull origin master
+            npm install
+            npx prisma generate
+            npx prisma db push
+            npm run build
+            pm2 restart dncmd-be || pm2 start dist/main.js --name dncmd-be
