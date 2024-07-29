@@ -17,6 +17,7 @@ export enum UserRole {
 
 export class AuthDto {
   @IsNotEmpty()
+  @Transform(({ value }) => value.toLowerCase())
   @IsEmail()
   email: string;
 

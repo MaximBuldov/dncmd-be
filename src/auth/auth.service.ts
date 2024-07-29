@@ -48,7 +48,7 @@ export class AuthService {
 
   async register({ email, dob, password, confirm, ...rest }: AuthDto) {
     const oldUser = await this.prisma.user.findUnique({
-      where: { email }
+      where: { email: email.toLowerCase() }
     });
 
     if (oldUser) throw new BadRequestException('User already exists');
@@ -56,7 +56,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: {
         ...rest,
-        email,
+        email: email.toLowerCase(),
         dob: new Date(dob),
         password: await bcrypt.hash(password, saltRounds)
       }
@@ -70,7 +70,9 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
     if (!user) throw new NotFoundException('Email not found');
 
     const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
