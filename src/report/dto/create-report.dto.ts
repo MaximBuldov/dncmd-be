@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsDate, IsNumber } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional
+} from 'class-validator';
 import * as dayjs from 'dayjs';
 
 export class CreateReportDto {
@@ -29,7 +35,8 @@ export class CreateReportDto {
   students: number;
 
   @IsBoolean()
-  completed: boolean;
+  @IsOptional()
+  completed?: boolean;
 
   @IsNumber()
   stripe: number;

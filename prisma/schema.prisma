@@ -83,7 +83,7 @@ model Report {
   beg Float
   adv Float
   students Float
-  completed Boolean
+  completed Boolean?
   stripe Float?
 
   costs ReportCost[]
