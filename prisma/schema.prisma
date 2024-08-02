@@ -70,28 +70,7 @@ model Category {
   @@map("category")
 }
 
-model Report {
-  id Int @id @default(autoincrement())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  date DateTime
-  cash Float
-  card Float
-  revenue Float
-  profit Float
-  beg Float
-  adv Float
-  students Float
-  completed Boolean?
-  stripe Float?
-
-  costs ReportCost[]
-
-  @@map("report")
-}
-
-model ReportCost {
+model Cost {
   id Int @id @default(autoincrement())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -99,9 +78,6 @@ model ReportCost {
   name String
   sum Float
   date DateTime
-
-  report Report @relation(fields: [report_id], references: [id])
-  report_id Int
 
   @@map("cost")
 }

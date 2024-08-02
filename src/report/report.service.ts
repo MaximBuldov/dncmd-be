@@ -2,47 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { CreateCostDto } from './dto/create-report.dto';
+import { UpdateCostDto } from './dto/update-report.dto';
 import { createReport } from './utils/create-report';
 
 @Injectable()
 export class ReportService {
   constructor(private prisma: PrismaService) {}
-  async create({ costs, ...rest }: CreateReportDto) {
-    return await this.prisma.report.create({
-      data: {
-        ...rest,
-        costs: {
-          create: costs.map(({ date, name, sum }) => ({
-            date: dayjs(date).toDate(),
-            name,
-            sum: parseFloat(sum)
-          }))
-        }
-      },
-      include: {
-        costs: true
-      }
-    });
+
+  async create(data: CreateCostDto[]) {
+    return await this.prisma.cost.createManyAndReturn({ data });
   }
 
   async findAll({ from, to }: { from: string; to: string }) {
-    const reports = await this.prisma.report.findMany({
-      where: {
-        date: {
-          gte: dayjs(from).toDate(),
-          lte: dayjs(to).toDate()
-        }
-      },
-      orderBy: { created_at: 'desc' },
-      include: {
-        costs: true
-      }
-    });
-
-    const lastReport = reports[0];
-
     const products = await this.prisma.orderProduct.findMany({
       where: {
         order: {
@@ -56,9 +28,7 @@ export class ReportService {
         },
         product: {
           date_time: {
-            gte: lastReport?.completed
-              ? dayjs(lastReport?.date).add(1, 'month').toDate()
-              : dayjs(lastReport?.date || from).toDate(),
+            gte: dayjs(from).toDate(),
             lte: dayjs(to).endOf('month').toDate()
           }
         }
@@ -73,27 +43,46 @@ export class ReportService {
       }
     });
 
-    const temporaryReports = createReport(products, reports);
-
-    return [...temporaryReports, ...reports];
-  }
-
-  async update(id: number, { costs, ...rest }: UpdateReportDto) {
-    return await this.prisma.report.update({
-      where: { id },
-      data: {
-        ...rest,
-        costs: {
-          set: costs
+    const costs = await this.prisma.cost.findMany({
+      where: {
+        date: {
+          gte: dayjs(from).toDate(),
+          lte: dayjs(to).endOf('month').toDate()
         }
-      },
-      include: {
-        costs: true
       }
     });
+
+    const reports = createReport(products, costs);
+
+    return reports;
   }
 
-  async remove(id: number) {
-    return await this.prisma.report.delete({ where: { id } });
+  async update(data: UpdateCostDto[]) {
+    const withId = data.filter((el) => !!el.id);
+    const withoutId = data.filter((el) => !el.id);
+
+    await this.prisma.cost.deleteMany({
+      where: {
+        id: {
+          notIn: withId.map((el) => el.id)
+        },
+        date: {
+          gte: dayjs(data[0].date).startOf('month').toDate(),
+          lte: dayjs(data[0].date).endOf('month').toDate()
+        }
+      }
+    });
+
+    const updatedCosts = await this.prisma.$transaction(
+      withId.map((cost) =>
+        this.prisma.cost.update({ where: { id: cost.id }, data: cost })
+      )
+    );
+
+    const newCosts = await this.prisma.cost.createManyAndReturn({
+      data: withoutId.map(({ name, sum, date }) => ({ name, sum, date }))
+    });
+
+    return [...updatedCosts, ...newCosts];
   }
 }

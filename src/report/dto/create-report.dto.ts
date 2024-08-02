@@ -1,46 +1,17 @@
 import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsDate,
-  IsNumber,
-  IsOptional
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import * as dayjs from 'dayjs';
 
-export class CreateReportDto {
+export class CreateCostDto {
   @IsDate()
   @Transform(({ value }) => dayjs(value).toDate())
   date: Date;
 
-  @IsNumber()
-  cash: number;
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
   @IsNumber()
-  card: number;
-
-  @IsNumber()
-  revenue: number;
-
-  @IsNumber()
-  profit: number;
-
-  @IsNumber()
-  beg: number;
-
-  @IsNumber()
-  adv: number;
-
-  @IsNumber()
-  students: number;
-
-  @IsBoolean()
-  @IsOptional()
-  completed?: boolean;
-
-  @IsNumber()
-  stripe: number;
-
-  @IsArray()
-  costs: [];
+  @Transform(({ value }) => parseFloat(value))
+  sum: number;
 }

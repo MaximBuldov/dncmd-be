@@ -1,4 +1,15 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateReportDto } from './create-report.dto';
+import { IsNumber, IsOptional } from 'class-validator';
+import { CreateCostDto } from './create-report.dto';
 
-export class UpdateReportDto extends PartialType(CreateReportDto) {}
+export class UpdateCostDto extends PartialType(CreateCostDto) {
+  @IsNumber()
+  @IsOptional()
+  id: number;
+
+  @IsOptional()
+  created_at: Date;
+
+  @IsOptional()
+  updated_at: Date;
+}
