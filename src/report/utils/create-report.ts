@@ -67,7 +67,7 @@ export const createReport = (
     );
 
     return {
-      date: dayjs(key).toDate(),
+      date: dayjs(key).startOf('month').toDate(),
       cash: calculateTotal(PaymentMethod.cash),
       card: calculateTotal(PaymentMethod.stripe),
       stripe,
