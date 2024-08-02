@@ -19,7 +19,7 @@ export class CouponService {
 
   async create(data: CreateCouponDto) {
     const oldCoupon = await this.prisma.coupon.findUnique({
-      where: { code: data.code }
+      where: { code: data.code.toLowerCase() }
     });
 
     if (oldCoupon) throw new BadRequestException('Coupon already exists');
@@ -65,7 +65,7 @@ export class CouponService {
   async findOne(id: number, code: string) {
     const coupon = await this.prisma.coupon.findUnique({
       where: {
-        code,
+        code: code.toLowerCase(),
         allowed_users: {
           some: { id }
         },
@@ -89,7 +89,7 @@ export class CouponService {
     action: 'connect' | 'disconnect'
   ) {
     await this.prisma.coupon.update({
-      where: { code: coupon.code },
+      where: { code: coupon.code.toLowerCase() },
       data: {
         used_by: {
           [action]: { id: userId }

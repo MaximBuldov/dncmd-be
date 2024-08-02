@@ -72,7 +72,7 @@ export class AuthService {
       code: `welcome${user.id}`,
       allowed_users: [user.id],
       amount: 5,
-      date_expires: dayjs().endOf('year').toDate(),
+      date_expires: dayjs().add(1, 'year').toDate(),
       discount_type: 'fixed_cart'
     });
 
