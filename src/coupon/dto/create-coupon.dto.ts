@@ -27,7 +27,7 @@ export class CreateCouponDto {
 
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 
   @IsDate()
   @Transform(({ value }) => dayjs(value).toDate())
@@ -35,11 +35,11 @@ export class CreateCouponDto {
 
   @IsOptional()
   @IsArray()
-  exc_cat: number[] = [];
+  exc_cat?: number[] = [];
 
   @IsOptional()
   @IsArray()
-  used_by: number[] = [];
+  used_by?: number[] = [];
 
   @IsOptional()
   @IsArray()

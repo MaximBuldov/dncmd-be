@@ -38,7 +38,7 @@ export class CouponService {
     });
 
     coupon.allowed_users.forEach((user) => {
-      this.mailService.coupon(user, coupon.code);
+      this.mailService.coupon(user, coupon.code, coupon.amount);
     });
 
     return coupon;

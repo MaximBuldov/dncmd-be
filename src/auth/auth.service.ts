@@ -7,6 +7,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import dayjs from 'dayjs';
+import { CouponService } from 'src/coupon/coupon.service';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { returnUserObject } from 'src/user/return-user.object';
@@ -21,7 +23,8 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
-    private mailService: MailService
+    private mailService: MailService,
+    private couponService: CouponService
   ) {}
 
   async users() {
@@ -63,8 +66,15 @@ export class AuthService {
     });
 
     await this.mailService.welcome(user.email, user.first_name);
-
     await this.mailService.newStudent(user);
+
+    await this.couponService.create({
+      code: `welcome${user.id}`,
+      allowed_users: [user.id],
+      amount: 5,
+      date_expires: dayjs().endOf('year').toDate(),
+      discount_type: 'fixed_cart'
+    });
 
     return await this.returnUserFields(user);
   }

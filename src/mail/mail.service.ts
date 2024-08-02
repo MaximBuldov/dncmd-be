@@ -89,13 +89,18 @@ export class MailService {
     );
   }
 
-  async coupon(user: Pick<User, 'email' | 'first_name'>, code: string) {
+  async coupon(
+    user: Pick<User, 'email' | 'first_name'>,
+    code: string,
+    amount: number
+  ) {
     await this.sendMail(
       user.email,
       'New Coupon - Dance Mode',
       {
         name: user.first_name,
-        code
+        code,
+        amount
       },
       'coupon'
     );
