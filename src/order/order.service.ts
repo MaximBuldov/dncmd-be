@@ -9,7 +9,15 @@ import Stripe from 'stripe';
 import { CreateIntentDto } from './dto/create-intent.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderQueryDto } from './dto/order-query.dto';
-import { UpdateOrderDto, UpdateStripeOrderDto } from './dto/update-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+
+interface UpdateStripeOrder {
+  data: {
+    object: {
+      id: string;
+    };
+  };
+}
 
 @Injectable()
 export class OrderService {
@@ -186,9 +194,9 @@ export class OrderService {
     return order;
   }
 
-  async updateStripe({ payment_intent }: UpdateStripeOrderDto) {
+  async updateStripe({ data }: UpdateStripeOrder) {
     const order = await this.prisma.order.update({
-      where: { stripe_id: payment_intent },
+      where: { stripe_id: data.object.id },
       data: {
         status: OrderStatus.completed
       }

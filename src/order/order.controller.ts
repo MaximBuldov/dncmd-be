@@ -17,7 +17,7 @@ import { CurrentUser } from 'src/auth/decorators/user.decorator';
 import { CreateIntentDto } from './dto/create-intent.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderQueryDto } from './dto/order-query.dto';
-import { UpdateOrderDto, UpdateStripeOrderDto } from './dto/update-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderService } from './order.service';
 
 @Controller('orders')
@@ -54,8 +54,8 @@ export class OrderController {
   }
 
   @Post('update-stripe')
-  async updateStripe(@Body() updateStripeOrderDto: UpdateStripeOrderDto) {
-    return this.orderService.updateStripe(updateStripeOrderDto);
+  async updateStripe(@Body() data) {
+    return this.orderService.updateStripe(data);
   }
 
   @Auth()
