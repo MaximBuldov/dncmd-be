@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
