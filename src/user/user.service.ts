@@ -33,7 +33,8 @@ export class UserService {
         where,
         take: all ? undefined : +per_page,
         skip,
-        orderBy: { created_at: 'desc' }
+        orderBy: { created_at: 'desc' },
+        select: returnUserObject
       }),
       this.prisma.user.count({ where })
     ]);
