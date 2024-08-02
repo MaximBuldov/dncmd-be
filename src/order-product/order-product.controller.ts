@@ -9,11 +9,8 @@ export class OrderProductController {
 
   @Auth()
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateOrderProductDto: UpdateOrderProductDto
-  ) {
-    return await this.orderProductService.update(+id, updateOrderProductDto);
+  async update(@Param('id') id: string, @Body() data: UpdateOrderProductDto) {
+    return await this.orderProductService.update(+id, data);
   }
 
   @Auth()
