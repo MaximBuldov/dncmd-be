@@ -29,7 +29,7 @@ export class OrderProductService {
 
     if (isDeadline && isPaid) {
       await this.couponService.create({
-        code: `reschedule${res.order_id}${res.user_id}${res.product_id}`,
+        code: `res${res.order_id}${res.user_id}${res.product_id}`,
         amount: res.total,
         discount_type: 'fixed_cart',
         date_expires: dayjs(res.product.date_time)

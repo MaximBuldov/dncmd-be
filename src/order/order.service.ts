@@ -205,15 +205,14 @@ export class OrderService {
   }
 
   async remove(id: number) {
-    const [order] = await Promise.all([
-      this.prisma.order.delete({
-        where: { id },
-        include: { line_items: true, coupons: true }
-      }),
-      this.prisma.orderProduct.deleteMany({
-        where: { order_id: id }
-      })
-    ]);
+    await this.prisma.orderProduct.deleteMany({
+      where: { order_id: id }
+    });
+
+    const order = await this.prisma.order.delete({
+      where: { id },
+      include: { line_items: true, coupons: true }
+    });
 
     this.productService.updateProductsAmount(
       order.line_items.map((el) => el.product_id),
