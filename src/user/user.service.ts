@@ -55,6 +55,17 @@ export class UserService {
   }
 
   async remove(id: number) {
+    await this.prisma.orderProduct.deleteMany({
+      where: {
+        user_id: id
+      }
+    });
+
+    await this.prisma.order.deleteMany({
+      where: {
+        customer_id: id
+      }
+    });
     return await this.prisma.user.delete({
       where: { id }
     });
