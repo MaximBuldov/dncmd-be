@@ -8,7 +8,7 @@ import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 export class OrderProductService {
   constructor(
     private prisma: PrismaService,
-    private couponeService: CouponService
+    private couponService: CouponService
   ) {}
 
   async update(
@@ -24,7 +24,7 @@ export class OrderProductService {
     });
 
     if (!isDeadline) {
-      await this.couponeService.create({
+      await this.couponService.create({
         code: `reschedule${res.order_id}${res.user_id}${res.product_id}`,
         amount: res.total,
         discount_type: 'fixed_cart',
@@ -39,7 +39,7 @@ export class OrderProductService {
     return res;
   }
 
-  async updateMany({ productStatus, ids, isDeadline }: UpdateOrderProductDto) {
+  async updateMany({ productStatus, ids }: UpdateOrderProductDto) {
     return await this.prisma.orderProduct.updateMany({
       where: { id: { in: ids } },
       data: { productStatus }
