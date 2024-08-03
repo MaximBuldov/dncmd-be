@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import dayjs from 'dayjs';
+import { OrderStatus } from '@prisma/client';
+import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
@@ -11,19 +12,22 @@ export class OrderProductService {
     private couponService: CouponService
   ) {}
 
-  async update(
-    id: number,
-    { productStatus, isDeadline }: UpdateOrderProductDto
-  ) {
+  async update(id: number, { productStatus }: UpdateOrderProductDto) {
     const res = await this.prisma.orderProduct.update({
       where: { id },
       data: { productStatus },
       include: {
-        product: true
+        product: true,
+        order: true
       }
     });
 
-    if (!isDeadline) {
+    const isDeadline = dayjs().isBefore(
+      dayjs(res.product.date_time).subtract(5, 'hour')
+    );
+    const isPaid = res.order.status === OrderStatus.completed;
+
+    if (isDeadline && isPaid) {
       await this.couponService.create({
         code: `reschedule${res.order_id}${res.user_id}${res.product_id}`,
         amount: res.total,
