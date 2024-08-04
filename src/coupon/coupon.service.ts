@@ -27,6 +27,7 @@ export class CouponService {
     const coupon = await this.prisma.coupon.create({
       data: {
         ...data,
+        code: data.code.toLowerCase(),
         allowed_users: {
           connect: data.allowed_users.map((id) => ({ id }))
         },
