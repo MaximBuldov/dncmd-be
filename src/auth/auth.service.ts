@@ -1,9 +1,6 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
@@ -27,25 +24,13 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private mailService: MailService,
-    private couponService: CouponService,
-    private readonly logger: Logger
+    private couponService: CouponService
   ) {}
 
-  SERVICE: string = AuthService.name;
-
   async users() {
-    try {
-      return await this.prisma.user.findMany({
-        select: { id: true }
-      });
-    } catch (error) {
-      this.logger.error('Unable to get users', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return await this.prisma.user.findMany({
+      select: { id: true }
+    });
   }
 
   async login(dto: LoginDto) {
@@ -54,131 +39,86 @@ export class AuthService {
   }
 
   async getNewTokens(refreshToken: string) {
-    try {
-      const result = await this.jwt.verifyAsync(refreshToken);
-      if (!result) throw new UnauthorizedException('Invalid refresh token');
+    const result = await this.jwt.verifyAsync(refreshToken);
+    if (!result) throw new UnauthorizedException('Invalid refresh token');
 
-      const user = await this.prisma.user.findUnique({
-        where: { id: result.id }
-      });
+    const user = await this.prisma.user.findUnique({
+      where: { id: result.id }
+    });
 
-      return await this.returnUserFields(user);
-    } catch (error) {
-      this.logger.error('Unable to get new token', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return await this.returnUserFields(user);
   }
 
   async register({ email, dob, password, confirm, ...rest }: AuthDto) {
-    try {
-      const oldUser = await this.prisma.user.findUnique({
-        where: { email: email.toLowerCase() }
-      });
+    const oldUser = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
 
-      if (oldUser) throw new BadRequestException('User already exists');
+    if (oldUser) throw new BadRequestException('User already exists');
 
-      const user = await this.prisma.user.create({
-        data: {
-          ...rest,
-          email: email.toLowerCase(),
-          dob: new Date(dob),
-          password: await bcrypt.hash(password, saltRounds)
-        }
-      });
+    const user = await this.prisma.user.create({
+      data: {
+        ...rest,
+        email: email.toLowerCase(),
+        dob: new Date(dob),
+        password: await bcrypt.hash(password, saltRounds)
+      }
+    });
 
-      await this.mailService.welcome(user.email, user.first_name);
-      await this.mailService.newStudent(user);
+    await this.mailService.welcome(user.email, user.first_name);
+    await this.mailService.newStudent(user);
 
-      await this.couponService.create({
-        code: `welcome${user.id}`,
-        allowed_users: [user.id],
-        amount: 5,
-        date_expires: dayjs().add(1, 'year').toDate(),
-        discount_type: 'fixed_cart'
-      });
+    await this.couponService.create({
+      code: `welcome${user.id}`,
+      allowed_users: [user.id],
+      amount: 5,
+      date_expires: dayjs().add(1, 'year').toDate(),
+      discount_type: 'fixed_cart'
+    });
 
-      return await this.returnUserFields(user);
-    } catch (error) {
-      this.logger.error('Unable to get new token', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return await this.returnUserFields(user);
   }
 
   async resetPassword(email: string) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { email: email.toLowerCase() }
-      });
-      if (!user) throw new NotFoundException('Email not found');
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
+    if (!user) throw new NotFoundException('Email not found');
 
-      const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
-      const link = `${process.env.UI_URL}/reset-password/${token}`;
+    const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
+    const link = `${process.env.UI_URL}/reset-password/${token}`;
 
-      await this.mailService.resetPassword(user, link);
+    await this.mailService.resetPassword(user, link);
 
-      return { message: 'Password reset link sent' };
-    } catch (error) {
-      this.logger.error('Unable to reset password', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return { message: 'Password reset link sent' };
   }
 
   async setPassword({ token, password }: SetPasswordDto) {
-    try {
-      const { id } = await this.jwt.verifyAsync<{ id?: number }>(token);
-      if (!id) throw new UnauthorizedException('Invalid or expired token');
+    const { id } = await this.jwt.verifyAsync<{ id?: number }>(token);
+    if (!id) throw new UnauthorizedException('Invalid or expired token');
 
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: { password: await bcrypt.hash(password, saltRounds) },
-        select: returnUserObject
-      });
-      if (!user) throw new NotFoundException('User not found');
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: { password: await bcrypt.hash(password, saltRounds) },
+      select: returnUserObject
+    });
+    if (!user) throw new NotFoundException('User not found');
 
-      return await this.returnUserFields(user);
-    } catch (error) {
-      this.logger.error('Unable to set password', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return await this.returnUserFields(user);
   }
 
   private async issueTokens(userId: number) {
-    try {
-      const data = { id: userId };
+    const data = { id: userId };
 
-      const accessToken = this.jwt.sign(data, {
-        expiresIn: '1h'
-      });
+    const accessToken = this.jwt.sign(data, {
+      expiresIn: '1h'
+    });
 
-      const refreshToken = this.jwt.sign(data, {
-        expiresIn: '7d'
-      });
+    const refreshToken = this.jwt.sign(data, {
+      expiresIn: '7d'
+    });
 
-      return { accessToken, refreshToken };
-    } catch (error) {
-      this.logger.error('Unable to issue token', error.stack, this.SERVICE);
-
-      throw new HttpException(
-        `${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+    return { accessToken, refreshToken };
   }
 
   private async returnUserFields(user: User) {

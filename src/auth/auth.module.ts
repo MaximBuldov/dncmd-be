@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from 'src/config/jwt.config';
@@ -16,8 +16,7 @@ import { JwtStrategy } from './jwt.strategy';
     PrismaService,
     JwtStrategy,
     MailService,
-    CouponService,
-    Logger
+    CouponService
   ],
   imports: [
     ConfigModule,
