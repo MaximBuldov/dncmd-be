@@ -71,7 +71,7 @@ export class AuthService {
     await this.couponService.create({
       code: `welcome${user.id}`,
       allowed_users: [user.id],
-      amount: 5,
+      amount: 15,
       date_expires: dayjs().add(1, 'year').toDate(),
       discount_type: 'fixed_cart'
     });
