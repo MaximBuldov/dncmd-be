@@ -4,7 +4,7 @@ import { Order, OrderProduct, Product, User } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import { join } from 'path';
 
 interface OrderProductWithName extends OrderProduct {
