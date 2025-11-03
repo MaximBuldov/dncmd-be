@@ -1,10 +1,10 @@
 // src/mail/mail.service.ts
 import { Injectable } from '@nestjs/common';
 import { Order, OrderProduct, Product, User } from '@prisma/client';
-import * as sgMail from '@sendgrid/mail';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
+import nodemailer from 'nodemailer';
 import { join } from 'path';
 
 interface OrderProductWithName extends OrderProduct {
@@ -17,8 +17,17 @@ interface OrderWithItems extends Order {
 
 @Injectable()
 export class MailService {
+  private transporter: nodemailer.Transporter;
   constructor() {
-    sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
+    this.transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
   }
   private loadTemplate(templateName: string, context: any): string {
     const templateDir =
@@ -37,7 +46,7 @@ export class MailService {
       html
     };
 
-    await sgMail.send(msg);
+    await this.transporter.sendMail(msg);
   }
 
   async newOrder(email: string, order: OrderWithItems, user: User) {
