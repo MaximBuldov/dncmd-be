@@ -18,6 +18,7 @@ interface OrderWithItems extends Order {
 @Injectable()
 export class MailService {
   private transporter: nodemailer.Transporter;
+
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
