@@ -31,8 +31,7 @@ export class MailService {
     });
   }
   private loadTemplate(templateName: string, context: any): string {
-    const templateDir =
-      process.env.TEMPLATES_DIR || join(__dirname, 'templates');
+    const templateDir = join(process.cwd(), 'dist/mail/templates');
     const templatePath = join(templateDir, `${templateName}.html`);
     const source = readFileSync(templatePath, 'utf8');
     const template = handlebars.compile(source);
