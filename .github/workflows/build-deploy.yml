@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd dncmd-be
+            cd /var/www/dncmd-be
             git pull origin master
             npm install
             npx prisma generate

@@ -5,6 +5,7 @@ import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
+import { join } from 'path';
 
 interface OrderProductWithName extends OrderProduct {
   product: Pick<Product, 'name' | 'date_time'>;
@@ -30,7 +31,10 @@ export class MailService {
     });
   }
   private loadTemplate(templateName: string, context: any): string {
-    const templatePath = `/var/www/dncmd-be/dist/mail/templates/${templateName}.html`;
+    const templateDir =
+      process.env.TEMPLATES_DIR || join(__dirname, 'templates');
+    console.log(templateDir);
+    const templatePath = join(templateDir, `${templateName}.html`);
     const source = readFileSync(templatePath, 'utf8');
     const template = handlebars.compile(source);
     return template(context);
