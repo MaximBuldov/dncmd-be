@@ -1,10 +1,9 @@
-// src/mail/mail.service.ts
+import { SendSmtpEmail, TransactionalEmailsApi } from '@getbrevo/brevo';
 import { Injectable } from '@nestjs/common';
 import { Order, OrderProduct, Product, User } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
-import * as nodemailer from 'nodemailer';
 import { join } from 'path';
 
 interface OrderProductWithName extends OrderProduct {
@@ -17,23 +16,15 @@ interface OrderWithItems extends Order {
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter;
+  private api: TransactionalEmailsApi;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    this.api = new TransactionalEmailsApi();
+    (this.api as any).authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
   }
   private loadTemplate(templateName: string, context: any): string {
     const templateDir =
       process.env.TEMPLATES_DIR || join(__dirname, 'templates');
-    console.log(templateDir);
     const templatePath = join(templateDir, `${templateName}.html`);
     const source = readFileSync(templatePath, 'utf8');
     const template = handlebars.compile(source);
@@ -41,14 +32,17 @@ export class MailService {
   }
   async sendMail(to: string, subject: string, data: any, template: string) {
     const html = this.loadTemplate(template, data);
-    const msg = {
-      to,
-      from: process.env.EMAIL,
-      subject,
-      html
-    };
+    const message = new SendSmtpEmail();
+    message.subject = subject;
+    message.htmlContent = html;
+    message.sender = { name: 'DanceMode', email: process.env.EMAIL };
+    message.to = [{ email: to }];
 
-    await this.transporter.sendMail(msg);
+    try {
+      await this.api.sendTransacEmail(message);
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   async newOrder(email: string, order: OrderWithItems, user: User) {
