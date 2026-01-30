@@ -1,5 +1,5 @@
+import { SendSmtpEmail, TransactionalEmailsApi } from '@getbrevo/brevo';
 import { Injectable } from '@nestjs/common';
-import * as sgMail from '@sendgrid/mail';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
@@ -21,8 +21,11 @@ interface OrderWithItems extends Order {
 
 @Injectable()
 export class MailService {
+  private api: TransactionalEmailsApi;
+
   constructor() {
-    sgMail.setApiKey(process.env.SEND_GRID_API_KEY);
+    this.api = new TransactionalEmailsApi();
+    (this.api as any).authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
   }
   private loadTemplate(templateName: string, context: any): string {
     const templateDir =
@@ -34,14 +37,17 @@ export class MailService {
   }
   async sendMail(to: string, subject: string, data: any, template: string) {
     const html = this.loadTemplate(template, data);
-    const msg = {
-      to,
-      from: process.env.EMAIL,
-      subject,
-      html
-    };
+    const message = new SendSmtpEmail();
+    message.subject = subject;
+    message.htmlContent = html;
+    message.sender = { name: 'DanceMode', email: process.env.EMAIL };
+    message.to = [{ email: to }];
 
-    await sgMail.send(msg);
+    try {
+      await this.api.sendTransacEmail(message);
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   async newOrder(email: string, order: OrderWithItems, user: User) {
