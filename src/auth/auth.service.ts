@@ -5,10 +5,10 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
+import { User } from 'src/generated/prisma/client';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { returnUserObject } from 'src/user/return-user.object';
@@ -80,9 +80,14 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
-    });
+    // const user = await this.prisma.user.findUnique({
+    //   where: { email: email.toLowerCase() }
+    // });
+    const user = {
+      id: 1,
+      email: 'maxbuldov@gmail.com',
+      first_name: 'Max'
+    } as User;
     if (!user) throw new NotFoundException('Email not found');
 
     const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });

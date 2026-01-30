@@ -1,4 +1,3 @@
-import { Role } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsDate,
@@ -9,6 +8,7 @@ import {
   MinLength
 } from 'class-validator';
 import * as dayjs from 'dayjs';
+import { Role } from 'src/generated/prisma/client';
 
 export enum UserRole {
   Admin = 'admin',

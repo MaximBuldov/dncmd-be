@@ -22,9 +22,9 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: ['https://app.dncmd.com', 'http://localhost:300'],
+    origin: ['https://dncmd.com'],
     exposedHeaders: 'Total'
   });
-  await app.listen(process.env.PORT || 8080);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

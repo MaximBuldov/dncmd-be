@@ -1,4 +1,3 @@
-import { DiscountType } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -11,6 +10,7 @@ import {
   Min
 } from 'class-validator';
 import * as dayjs from 'dayjs';
+import { DiscountType } from 'src/generated/prisma/client';
 
 export class CreateCouponDto {
   @IsString()

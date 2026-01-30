@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Role, User } from '@prisma/client';
 import * as dayjs from 'dayjs';
+import { Prisma, Role, User } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';

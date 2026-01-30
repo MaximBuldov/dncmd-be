@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { OrderStatus } from '@prisma/client';
 import * as dayjs from 'dayjs';
+import { OrderStatus } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateCostDto } from './dto/create-report.dto';
 import { UpdateCostDto } from './dto/update-report.dto';

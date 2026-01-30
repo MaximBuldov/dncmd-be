@@ -1,4 +1,3 @@
-import { ProductStatus } from '@prisma/client';
 import {
   IsArray,
   IsBoolean,
@@ -6,6 +5,7 @@ import {
   IsOptional,
   IsString
 } from 'class-validator';
+import { ProductStatus } from 'src/generated/prisma/client';
 
 export class UpdateOrderProductDto {
   @IsOptional()

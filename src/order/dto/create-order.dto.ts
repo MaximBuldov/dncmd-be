@@ -1,10 +1,10 @@
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
   Coupon,
   OrderProduct,
   OrderStatus,
   PaymentMethod
-} from '@prisma/client';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+} from 'src/generated/prisma/client';
 
 export class CreateOrderDto {
   @IsArray()

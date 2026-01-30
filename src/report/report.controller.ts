@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/generated/prisma/client';
 import { CreateCostDto } from './dto/create-report.dto';
 import { UpdateCostDto } from './dto/update-report.dto';
 import { ReportService } from './report.service';

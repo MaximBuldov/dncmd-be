@@ -1,11 +1,15 @@
-// src/mail/mail.service.ts
 import { Injectable } from '@nestjs/common';
-import { Order, OrderProduct, Product, User } from '@prisma/client';
 import * as sgMail from '@sendgrid/mail';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
 import { join } from 'path';
+import {
+  Order,
+  OrderProduct,
+  Product,
+  User
+} from 'src/generated/prisma/client';
 
 interface OrderProductWithName extends OrderProduct {
   product: Pick<Product, 'name' | 'date_time'>;

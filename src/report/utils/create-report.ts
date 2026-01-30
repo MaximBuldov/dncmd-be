@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import {
   Cost,
   Coupon,
@@ -5,8 +6,7 @@ import {
   OrderProduct,
   PaymentMethod,
   Product
-} from '@prisma/client';
-import * as dayjs from 'dayjs';
+} from 'src/generated/prisma/client';
 
 enum NameOfClass {
   BEGINNER = 'Beginner',

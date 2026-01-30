@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { Coupon } from '@prisma/client';
+import { Coupon } from 'src/generated/prisma/client';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';

@@ -1,29 +1,74 @@
-name: UI Prod
+name: BE Prod
 
 on:
   push:
-    branches:
-      - master
+    branches: ['master']
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v0.1.1
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd dncmd-be
-            git pull origin master
-            npm install
-            npx prisma generate
-            npx prisma db push
-            npm run build
-            pm2 restart dncmd-be || pm2 start dist/main.js --name dncmd-be
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Build
+        run: npm run build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Prepare release directory (remote)
+        run: |
+          RELEASE="$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA::7}"
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "\
+            set -e; \
+            mkdir -p /var/www/dncmd.com/api/releases/$RELEASE; \
+            mkdir -p /var/www/dncmd.com/api/shared; \
+            test -f /var/www/dncmd.com/api/shared/.env || (touch /var/www/dncmd.com/api/shared/.env && chmod 600 /var/www/dncmd.com/api/shared/.env); \
+          "
+
+      - name: Upload build to server (rsync)
+        run: |
+          rsync -az --delete \
+            dist/ \
+            package.json package-lock.json \
+            prisma/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/dncmd.com/api/releases/${{ env.RELEASE }}/
+
+      - name: Activate release (remote)
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "\
+            set -e; \
+            cd /var/www/dncmd.com/api/releases/${{ env.RELEASE }}; \
+            npm ci --omit=dev; \
+            npx prisma generate; \
+            \
+            # Если у тебя есть миграции — лучше так:
+            # npx prisma migrate deploy; \
+            # Если миграций нет и ты использовал db push — оставь так (на свой риск):
+            npx prisma db push; \
+            \
+            ln -sfn /var/www/dncmd.com/api/shared/.env /var/www/dncmd.com/api/releases/${{ env.RELEASE }}/.env; \
+            ln -sfn /var/www/dncmd.com/api/releases/${{ env.RELEASE }} /var/www/dncmd.com/api/current; \
+            \
+            pm2 start dist/main.js --name dncmd-be --update-env || pm2 reload dncmd-be --update-env; \
+            pm2 save; \
+          "

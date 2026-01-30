@@ -10,11 +10,11 @@ import {
   Query,
   Response
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
+import { Role } from 'src/generated/prisma/client';
 import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { CouponQueryDto } from './dto/query-coupon.dto';

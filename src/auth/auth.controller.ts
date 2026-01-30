@@ -6,7 +6,7 @@ import {
   Post,
   UseGuards
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Role } from 'src/generated/prisma/client';
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { Roles } from './decorators/roles.decorator';

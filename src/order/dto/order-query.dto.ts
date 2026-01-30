@@ -1,6 +1,6 @@
-import { OrderStatus } from '@prisma/client';
 import { Transform } from 'class-transformer';
 import { IsArray, IsDateString, IsInt, IsOptional, Min } from 'class-validator';
+import { OrderStatus } from 'src/generated/prisma/client';
 
 export class OrderQueryDto {
   @IsInt()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { OrderStatus } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
+import { OrderStatus } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 

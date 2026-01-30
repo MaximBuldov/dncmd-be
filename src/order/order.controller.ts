@@ -9,11 +9,11 @@ import {
   Query,
   Response
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
 import { Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
+import { Role, User } from 'src/generated/prisma/client';
 import { CreateIntentDto } from './dto/create-intent.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderQueryDto } from './dto/order-query.dto';

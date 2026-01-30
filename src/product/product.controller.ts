@@ -8,10 +8,10 @@ import {
   Post,
   Query
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
+import { Role, User } from 'src/generated/prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
