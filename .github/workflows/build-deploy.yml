@@ -52,6 +52,7 @@ jobs:
       - name: Upload build to server (rsync)
         run: |
           rsync -az --delete \
+            --exclude 'prisma.config.js' \
             dist/ \
             package.json package-lock.json \
             prisma/ \
