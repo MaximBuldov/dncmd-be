@@ -62,17 +62,16 @@ jobs:
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "\
             set -e; \
             cd /var/www/dncmd.com/api/releases/${{ env.RELEASE }}; \
+            \
+            # Make env available BEFORE prisma/npm steps
+            ln -sfn /var/www/dncmd.com/api/shared/.env .env; \
+            set -a; . ./.env; set +a; \
+            \
             npm ci --omit=dev; \
             npx prisma generate; \
-            \
-            # Если у тебя есть миграции — лучше так:
-            # npx prisma migrate deploy; \
-            # Если миграций нет и ты использовал db push — оставь так (на свой риск):
             npx prisma db push; \
             \
-            ln -sfn /var/www/dncmd.com/api/shared/.env /var/www/dncmd.com/api/releases/${{ env.RELEASE }}/.env; \
             ln -sfn /var/www/dncmd.com/api/releases/${{ env.RELEASE }} /var/www/dncmd.com/api/current; \
-            \
             pm2 start dist/main.js --name dncmd-be --update-env || pm2 reload dncmd-be --update-env; \
             pm2 save; \
           "
