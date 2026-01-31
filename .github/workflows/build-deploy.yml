@@ -68,7 +68,6 @@ jobs:
             set -a; . ./.env; set +a; \
             \
             npm ci --omit=dev; \
-            npx prisma generate; \
             npx prisma db push; \
             \
             ln -sfn /var/www/dncmd.com/api/releases/${{ env.RELEASE }} /var/www/dncmd.com/api/current; \
