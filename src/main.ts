@@ -20,7 +20,6 @@ async function bootstrap() {
     new TransformDateInterceptor(),
     new LoggingInterceptor()
   );
-  app.setGlobalPrefix('api');
   app.enableCors({
     origin: ['https://dncmd.com'],
     exposedHeaders: 'Total'
