@@ -21,7 +21,7 @@ async function bootstrap() {
     new LoggingInterceptor()
   );
   app.enableCors({
-    origin: ['https://dncmd.com'],
+    origin: ['https://dncmd.com', 'http://localhost:3000'],
     exposedHeaders: 'Total'
   });
   await app.listen(process.env.PORT || 3000);

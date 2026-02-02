@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
@@ -34,8 +36,16 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.validateUser(dto);
-    return await this.returnUserFields(user);
+    try {
+      const user = await this.validateUser(dto);
+      return await this.returnUserFields(user);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('LOGIN_ERROR:', err);
+      throw new InternalServerErrorException('Login failed');
+    }
   }
 
   async getNewTokens(refreshToken: string) {
