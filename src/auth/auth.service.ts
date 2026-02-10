@@ -108,7 +108,7 @@ export class AuthService {
       if (err instanceof HttpException) {
         throw err;
       }
-      throw new InternalServerErrorException('Login failed');
+      throw new InternalServerErrorException('Reset Password failed');
     }
   }
 

@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "postbuild": "copyfiles -u 3 src/mail/templates/**/* dist/mail/templates",
+    "postbuild": "copyfiles -u 3 src/mail/templates/**/* dist/src/mail/templates",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
