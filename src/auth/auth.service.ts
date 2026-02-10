@@ -90,18 +90,26 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email: email.toLowerCase() }
+      });
 
-    if (!user) throw new NotFoundException('Email not found');
+      if (!user) throw new NotFoundException('Email not found');
 
-    const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
-    const link = `${process.env.UI_URL}/reset-password/${token}`;
+      const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
+      const link = `${process.env.UI_URL}/reset-password/${token}`;
 
-    await this.mailService.resetPassword(user, link);
+      await this.mailService.resetPassword(user, link);
 
-    return { message: 'Password reset link sent' };
+      return { message: 'Password reset link sent' };
+    } catch (err) {
+      console.error('LOGIN_ERROR:', err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      throw new InternalServerErrorException('Login failed');
+    }
   }
 
   async setPassword({ token, password }: SetPasswordDto) {
