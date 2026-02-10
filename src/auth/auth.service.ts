@@ -90,14 +90,10 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
-    // const user = await this.prisma.user.findUnique({
-    //   where: { email: email.toLowerCase() }
-    // });
-    const user = {
-      id: 1,
-      email: 'maxbuldov@gmail.com',
-      first_name: 'Max'
-    } as User;
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
+
     if (!user) throw new NotFoundException('Email not found');
 
     const token = this.jwt.sign({ id: user.id }, { expiresIn: '1h' });
