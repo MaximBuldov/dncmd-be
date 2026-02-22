@@ -94,18 +94,23 @@ export class OrderService {
 
     const totalInCents = Math.round(total) * 100;
 
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount: totalInCents,
-      currency: 'usd',
-      automatic_payment_methods: {
-        enabled: true
-      }
-    });
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: totalInCents,
+        currency: 'usd',
+        automatic_payment_methods: {
+          enabled: true
+        }
+      });
 
-    return {
-      paymentIntentId: paymentIntent.id,
-      clientSecret: paymentIntent.client_secret
-    };
+      return {
+        paymentIntentId: paymentIntent.id,
+        clientSecret: paymentIntent.client_secret
+      };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async findAll({
