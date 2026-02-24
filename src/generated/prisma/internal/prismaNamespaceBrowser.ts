@@ -53,11 +53,11 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Product: 'Product',
-  Category: 'Category',
-  Cost: 'Cost',
+  Bundle: 'Bundle',
   Order: 'Order',
   OrderProduct: 'OrderProduct',
-  Coupon: 'Coupon'
+  Coupon: 'Coupon',
+  Template: 'Template'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -103,30 +103,19 @@ export const ProductScalarFieldEnum = {
   date_time: 'date_time',
   is_canceled: 'is_canceled',
   stock_quantity: 'stock_quantity',
-  category_id: 'category_id'
+  bundleId: 'bundleId'
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
 
 
-export const CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name'
-} as const
-
-export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
-
-
-export const CostScalarFieldEnum = {
+export const BundleScalarFieldEnum = {
   id: 'id',
   created_at: 'created_at',
-  updated_at: 'updated_at',
-  name: 'name',
-  sum: 'sum',
-  date: 'date'
+  discount: 'discount'
 } as const
 
-export type CostScalarFieldEnum = (typeof CostScalarFieldEnum)[keyof typeof CostScalarFieldEnum]
+export type BundleScalarFieldEnum = (typeof BundleScalarFieldEnum)[keyof typeof BundleScalarFieldEnum]
 
 
 export const OrderScalarFieldEnum = {
@@ -171,6 +160,16 @@ export const CouponScalarFieldEnum = {
 } as const
 
 export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
+
+
+export const TemplateScalarFieldEnum = {
+  id: 'id',
+  created_at: 'created_at',
+  price: 'price',
+  name: 'name'
+} as const
+
+export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
 
 
 export const SortOrder = {

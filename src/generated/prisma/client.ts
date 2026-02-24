@@ -48,15 +48,10 @@ export type User = Prisma.UserModel
  */
 export type Product = Prisma.ProductModel
 /**
- * Model Category
+ * Model Bundle
  * 
  */
-export type Category = Prisma.CategoryModel
-/**
- * Model Cost
- * 
- */
-export type Cost = Prisma.CostModel
+export type Bundle = Prisma.BundleModel
 /**
  * Model Order
  * 
@@ -72,3 +67,8 @@ export type OrderProduct = Prisma.OrderProductModel
  * 
  */
 export type Coupon = Prisma.CouponModel
+/**
+ * Model Template
+ * 
+ */
+export type Template = Prisma.TemplateModel

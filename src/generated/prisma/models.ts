@@ -10,9 +10,9 @@
  */
 export type * from './models/User'
 export type * from './models/Product'
-export type * from './models/Category'
-export type * from './models/Cost'
+export type * from './models/Bundle'
 export type * from './models/Order'
 export type * from './models/OrderProduct'
 export type * from './models/Coupon'
+export type * from './models/Template'
 export type * from './commonInputTypes'

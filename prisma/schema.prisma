@@ -47,33 +47,18 @@ model Product {
 
   wait_list User[]
 
-  category    Category @relation(fields: [category_id], references: [id])
-  category_id Int
-
-  orders OrderProduct[]
+  orders   OrderProduct[]
+  bundle   Bundle?        @relation(fields: [bundleId], references: [id])
+  bundleId Int?
 
   @@map("product")
 }
 
-model Category {
-  id Int @id @default(autoincrement())
-
-  name     String
-  products Product[]
-
-  @@map("category")
-}
-
-model Cost {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  name String
-  sum  Float
-  date DateTime
-
-  @@map("cost")
+model Bundle {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  discount   Float
+  products   Product[]
 }
 
 model Order {
@@ -136,6 +121,13 @@ model Coupon {
   orders Order[]
 
   @@map("coupon")
+}
+
+model Template {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  price      Float
+  name       String
 }
 
 enum DiscountType {
