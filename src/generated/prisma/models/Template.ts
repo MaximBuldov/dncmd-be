@@ -41,6 +41,7 @@ export type TemplateMinAggregateOutputType = {
   created_at: Date | null
   price: number | null
   name: string | null
+  time: string | null
 }
 
 export type TemplateMaxAggregateOutputType = {
@@ -48,6 +49,7 @@ export type TemplateMaxAggregateOutputType = {
   created_at: Date | null
   price: number | null
   name: string | null
+  time: string | null
 }
 
 export type TemplateCountAggregateOutputType = {
@@ -55,6 +57,7 @@ export type TemplateCountAggregateOutputType = {
   created_at: number
   price: number
   name: number
+  time: number
   _all: number
 }
 
@@ -74,6 +77,7 @@ export type TemplateMinAggregateInputType = {
   created_at?: true
   price?: true
   name?: true
+  time?: true
 }
 
 export type TemplateMaxAggregateInputType = {
@@ -81,6 +85,7 @@ export type TemplateMaxAggregateInputType = {
   created_at?: true
   price?: true
   name?: true
+  time?: true
 }
 
 export type TemplateCountAggregateInputType = {
@@ -88,6 +93,7 @@ export type TemplateCountAggregateInputType = {
   created_at?: true
   price?: true
   name?: true
+  time?: true
   _all?: true
 }
 
@@ -182,6 +188,7 @@ export type TemplateGroupByOutputType = {
   created_at: Date
   price: number
   name: string
+  time: string
   _count: TemplateCountAggregateOutputType | null
   _avg: TemplateAvgAggregateOutputType | null
   _sum: TemplateSumAggregateOutputType | null
@@ -212,6 +219,8 @@ export type TemplateWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Template"> | Date | string
   price?: Prisma.FloatFilter<"Template"> | number
   name?: Prisma.StringFilter<"Template"> | string
+  time?: Prisma.StringFilter<"Template"> | string
+  categories?: Prisma.CategoryListRelationFilter
 }
 
 export type TemplateOrderByWithRelationInput = {
@@ -219,6 +228,8 @@ export type TemplateOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   price?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  time?: Prisma.SortOrder
+  categories?: Prisma.CategoryOrderByRelationAggregateInput
 }
 
 export type TemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -229,6 +240,8 @@ export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Template"> | Date | string
   price?: Prisma.FloatFilter<"Template"> | number
   name?: Prisma.StringFilter<"Template"> | string
+  time?: Prisma.StringFilter<"Template"> | string
+  categories?: Prisma.CategoryListRelationFilter
 }, "id">
 
 export type TemplateOrderByWithAggregationInput = {
@@ -236,6 +249,7 @@ export type TemplateOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   price?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  time?: Prisma.SortOrder
   _count?: Prisma.TemplateCountOrderByAggregateInput
   _avg?: Prisma.TemplateAvgOrderByAggregateInput
   _max?: Prisma.TemplateMaxOrderByAggregateInput
@@ -251,12 +265,15 @@ export type TemplateScalarWhereWithAggregatesInput = {
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Template"> | Date | string
   price?: Prisma.FloatWithAggregatesFilter<"Template"> | number
   name?: Prisma.StringWithAggregatesFilter<"Template"> | string
+  time?: Prisma.StringWithAggregatesFilter<"Template"> | string
 }
 
 export type TemplateCreateInput = {
   created_at?: Date | string
   price: number
   name: string
+  time: string
+  categories?: Prisma.CategoryCreateNestedManyWithoutTemplatesInput
 }
 
 export type TemplateUncheckedCreateInput = {
@@ -264,12 +281,16 @@ export type TemplateUncheckedCreateInput = {
   created_at?: Date | string
   price: number
   name: string
+  time: string
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutTemplatesInput
 }
 
 export type TemplateUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  categories?: Prisma.CategoryUpdateManyWithoutTemplatesNestedInput
 }
 
 export type TemplateUncheckedUpdateInput = {
@@ -277,6 +298,8 @@ export type TemplateUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutTemplatesNestedInput
 }
 
 export type TemplateCreateManyInput = {
@@ -284,12 +307,14 @@ export type TemplateCreateManyInput = {
   created_at?: Date | string
   price: number
   name: string
+  time: string
 }
 
 export type TemplateUpdateManyMutationInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TemplateUncheckedUpdateManyInput = {
@@ -297,6 +322,7 @@ export type TemplateUncheckedUpdateManyInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TemplateCountOrderByAggregateInput = {
@@ -304,6 +330,7 @@ export type TemplateCountOrderByAggregateInput = {
   created_at?: Prisma.SortOrder
   price?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  time?: Prisma.SortOrder
 }
 
 export type TemplateAvgOrderByAggregateInput = {
@@ -316,6 +343,7 @@ export type TemplateMaxOrderByAggregateInput = {
   created_at?: Prisma.SortOrder
   price?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  time?: Prisma.SortOrder
 }
 
 export type TemplateMinOrderByAggregateInput = {
@@ -323,6 +351,7 @@ export type TemplateMinOrderByAggregateInput = {
   created_at?: Prisma.SortOrder
   price?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  time?: Prisma.SortOrder
 }
 
 export type TemplateSumOrderByAggregateInput = {
@@ -330,6 +359,153 @@ export type TemplateSumOrderByAggregateInput = {
   price?: Prisma.SortOrder
 }
 
+export type TemplateListRelationFilter = {
+  every?: Prisma.TemplateWhereInput
+  some?: Prisma.TemplateWhereInput
+  none?: Prisma.TemplateWhereInput
+}
+
+export type TemplateOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type TemplateCreateNestedManyWithoutCategoriesInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput> | Prisma.TemplateCreateWithoutCategoriesInput[] | Prisma.TemplateUncheckedCreateWithoutCategoriesInput[]
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutCategoriesInput | Prisma.TemplateCreateOrConnectWithoutCategoriesInput[]
+  connect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+}
+
+export type TemplateUncheckedCreateNestedManyWithoutCategoriesInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput> | Prisma.TemplateCreateWithoutCategoriesInput[] | Prisma.TemplateUncheckedCreateWithoutCategoriesInput[]
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutCategoriesInput | Prisma.TemplateCreateOrConnectWithoutCategoriesInput[]
+  connect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+}
+
+export type TemplateUpdateManyWithoutCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput> | Prisma.TemplateCreateWithoutCategoriesInput[] | Prisma.TemplateUncheckedCreateWithoutCategoriesInput[]
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutCategoriesInput | Prisma.TemplateCreateOrConnectWithoutCategoriesInput[]
+  upsert?: Prisma.TemplateUpsertWithWhereUniqueWithoutCategoriesInput | Prisma.TemplateUpsertWithWhereUniqueWithoutCategoriesInput[]
+  set?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  disconnect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  delete?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  connect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  update?: Prisma.TemplateUpdateWithWhereUniqueWithoutCategoriesInput | Prisma.TemplateUpdateWithWhereUniqueWithoutCategoriesInput[]
+  updateMany?: Prisma.TemplateUpdateManyWithWhereWithoutCategoriesInput | Prisma.TemplateUpdateManyWithWhereWithoutCategoriesInput[]
+  deleteMany?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
+}
+
+export type TemplateUncheckedUpdateManyWithoutCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput> | Prisma.TemplateCreateWithoutCategoriesInput[] | Prisma.TemplateUncheckedCreateWithoutCategoriesInput[]
+  connectOrCreate?: Prisma.TemplateCreateOrConnectWithoutCategoriesInput | Prisma.TemplateCreateOrConnectWithoutCategoriesInput[]
+  upsert?: Prisma.TemplateUpsertWithWhereUniqueWithoutCategoriesInput | Prisma.TemplateUpsertWithWhereUniqueWithoutCategoriesInput[]
+  set?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  disconnect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  delete?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  connect?: Prisma.TemplateWhereUniqueInput | Prisma.TemplateWhereUniqueInput[]
+  update?: Prisma.TemplateUpdateWithWhereUniqueWithoutCategoriesInput | Prisma.TemplateUpdateWithWhereUniqueWithoutCategoriesInput[]
+  updateMany?: Prisma.TemplateUpdateManyWithWhereWithoutCategoriesInput | Prisma.TemplateUpdateManyWithWhereWithoutCategoriesInput[]
+  deleteMany?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
+}
+
+export type TemplateCreateWithoutCategoriesInput = {
+  created_at?: Date | string
+  price: number
+  name: string
+  time: string
+}
+
+export type TemplateUncheckedCreateWithoutCategoriesInput = {
+  id?: number
+  created_at?: Date | string
+  price: number
+  name: string
+  time: string
+}
+
+export type TemplateCreateOrConnectWithoutCategoriesInput = {
+  where: Prisma.TemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput>
+}
+
+export type TemplateUpsertWithWhereUniqueWithoutCategoriesInput = {
+  where: Prisma.TemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.TemplateUpdateWithoutCategoriesInput, Prisma.TemplateUncheckedUpdateWithoutCategoriesInput>
+  create: Prisma.XOR<Prisma.TemplateCreateWithoutCategoriesInput, Prisma.TemplateUncheckedCreateWithoutCategoriesInput>
+}
+
+export type TemplateUpdateWithWhereUniqueWithoutCategoriesInput = {
+  where: Prisma.TemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.TemplateUpdateWithoutCategoriesInput, Prisma.TemplateUncheckedUpdateWithoutCategoriesInput>
+}
+
+export type TemplateUpdateManyWithWhereWithoutCategoriesInput = {
+  where: Prisma.TemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.TemplateUpdateManyMutationInput, Prisma.TemplateUncheckedUpdateManyWithoutCategoriesInput>
+}
+
+export type TemplateScalarWhereInput = {
+  AND?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
+  OR?: Prisma.TemplateScalarWhereInput[]
+  NOT?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
+  id?: Prisma.IntFilter<"Template"> | number
+  created_at?: Prisma.DateTimeFilter<"Template"> | Date | string
+  price?: Prisma.FloatFilter<"Template"> | number
+  name?: Prisma.StringFilter<"Template"> | string
+  time?: Prisma.StringFilter<"Template"> | string
+}
+
+export type TemplateUpdateWithoutCategoriesInput = {
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type TemplateUncheckedUpdateWithoutCategoriesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type TemplateUncheckedUpdateManyWithoutCategoriesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+
+/**
+ * Count Type TemplateCountOutputType
+ */
+
+export type TemplateCountOutputType = {
+  categories: number
+}
+
+export type TemplateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categories?: boolean | TemplateCountOutputTypeCountCategoriesArgs
+}
+
+/**
+ * TemplateCountOutputType without action
+ */
+export type TemplateCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TemplateCountOutputType
+   */
+  select?: Prisma.TemplateCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TemplateCountOutputType without action
+ */
+export type TemplateCountOutputTypeCountCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CategoryWhereInput
+}
 
 
 export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -337,6 +513,9 @@ export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   created_at?: boolean
   price?: boolean
   name?: boolean
+  time?: boolean
+  categories?: boolean | Prisma.Template$categoriesArgs<ExtArgs>
+  _count?: boolean | Prisma.TemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["template"]>
 
 export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -344,6 +523,7 @@ export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   created_at?: boolean
   price?: boolean
   name?: boolean
+  time?: boolean
 }, ExtArgs["result"]["template"]>
 
 export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -351,6 +531,7 @@ export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   created_at?: boolean
   price?: boolean
   name?: boolean
+  time?: boolean
 }, ExtArgs["result"]["template"]>
 
 export type TemplateSelectScalar = {
@@ -358,18 +539,28 @@ export type TemplateSelectScalar = {
   created_at?: boolean
   price?: boolean
   name?: boolean
+  time?: boolean
 }
 
-export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "price" | "name", ExtArgs["result"]["template"]>
+export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "price" | "name" | "time", ExtArgs["result"]["template"]>
+export type TemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categories?: boolean | Prisma.Template$categoriesArgs<ExtArgs>
+  _count?: boolean | Prisma.TemplateCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type TemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $TemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Template"
-  objects: {}
+  objects: {
+    categories: Prisma.$CategoryPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     created_at: Date
     price: number
     name: string
+    time: string
   }, ExtArgs["result"]["template"]>
   composites: {}
 }
@@ -764,6 +955,7 @@ readonly fields: TemplateFieldRefs;
  */
 export interface Prisma__TemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  categories<T extends Prisma.Template$categoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Template$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -797,6 +989,7 @@ export interface TemplateFieldRefs {
   readonly created_at: Prisma.FieldRef<"Template", 'DateTime'>
   readonly price: Prisma.FieldRef<"Template", 'Float'>
   readonly name: Prisma.FieldRef<"Template", 'String'>
+  readonly time: Prisma.FieldRef<"Template", 'String'>
 }
     
 
@@ -813,6 +1006,10 @@ export type TemplateFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Template
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
   /**
    * Filter, which Template to fetch.
    */
@@ -832,6 +1029,10 @@ export type TemplateFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  /**
    * Filter, which Template to fetch.
    */
   where: Prisma.TemplateWhereUniqueInput
@@ -849,6 +1050,10 @@ export type TemplateFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Template
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
   /**
    * Filter, which Template to fetch.
    */
@@ -898,6 +1103,10 @@ export type TemplateFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  /**
    * Filter, which Template to fetch.
    */
   where?: Prisma.TemplateWhereInput
@@ -946,6 +1155,10 @@ export type TemplateFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  /**
    * Filter, which Templates to fetch.
    */
   where?: Prisma.TemplateWhereInput
@@ -988,6 +1201,10 @@ export type TemplateCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Template
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
   /**
    * The data needed to create a Template.
    */
@@ -1036,6 +1253,10 @@ export type TemplateUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Template
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
   /**
    * The data needed to update a Template.
    */
@@ -1103,6 +1324,10 @@ export type TemplateUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  /**
    * The filter to search for the Template to update in case it exists.
    */
   where: Prisma.TemplateWhereUniqueInput
@@ -1129,6 +1354,10 @@ export type TemplateDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
+  /**
    * Filter which Template to delete.
    */
   where: Prisma.TemplateWhereUniqueInput
@@ -1149,6 +1378,30 @@ export type TemplateDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * Template.categories
+ */
+export type Template$categoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Category
+   */
+  select?: Prisma.CategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Category
+   */
+  omit?: Prisma.CategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryInclude<ExtArgs> | null
+  where?: Prisma.CategoryWhereInput
+  orderBy?: Prisma.CategoryOrderByWithRelationInput | Prisma.CategoryOrderByWithRelationInput[]
+  cursor?: Prisma.CategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CategoryScalarFieldEnum | Prisma.CategoryScalarFieldEnum[]
+}
+
+/**
  * Template without action
  */
 export type TemplateDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1160,4 +1413,8 @@ export type TemplateDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Template
    */
   omit?: Prisma.TemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplateInclude<ExtArgs> | null
 }

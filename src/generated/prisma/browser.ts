@@ -52,3 +52,8 @@ export type Coupon = Prisma.CouponModel
  * 
  */
 export type Template = Prisma.TemplateModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel

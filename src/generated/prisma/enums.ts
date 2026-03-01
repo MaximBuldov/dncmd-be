@@ -12,7 +12,8 @@
 export const DiscountType = {
   percent: 'percent',
   fixed_cart: 'fixed_cart',
-  fixed_product: 'fixed_product'
+  fixed_product: 'fixed_product',
+  credit: 'credit'
 } as const
 
 export type DiscountType = (typeof DiscountType)[keyof typeof DiscountType]

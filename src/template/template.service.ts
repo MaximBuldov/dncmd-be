@@ -8,11 +8,32 @@ export class TemplateService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateTemplateDto) {
-    return await this.prisma.template.create({ data });
+    return await this.prisma.template.create({
+      data: {
+        ...data,
+        categories: {
+          connect: data.categories.map((id) => ({ id }))
+        }
+      },
+      include: {
+        categories: true
+      }
+    });
   }
 
   async update(id: number, data: UpdateTemplateDto) {
-    return await this.prisma.template.update({ where: { id }, data });
+    return await this.prisma.template.update({
+      where: { id },
+      data: {
+        ...data,
+        categories: {
+          set: data.categories.map((id) => ({ id }))
+        }
+      },
+      include: {
+        categories: true
+      }
+    });
   }
 
   async remove(id: number) {
@@ -20,6 +41,8 @@ export class TemplateService {
   }
 
   async getAll() {
-    return await this.prisma.template.findMany();
+    return await this.prisma.template.findMany({
+      include: { categories: true }
+    });
   }
 }

@@ -200,13 +200,19 @@ export class OrderService {
   }
 
   async updateStripe({ data }: UpdateStripeOrder) {
-    const order = await this.prisma.order.update({
-      where: { stripe_id: data.object.id },
-      data: {
-        status: OrderStatus.completed
-      }
-    });
-    return order.id;
+    if (!!data.object.id) return;
+    try {
+      const order = await this.prisma.order.update({
+        where: { stripe_id: data.object.id },
+        data: {
+          status: OrderStatus.completed
+        }
+      });
+      return order.id;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 
   async remove(id: number) {

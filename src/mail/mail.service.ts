@@ -1,4 +1,8 @@
-import { SendSmtpEmail, TransactionalEmailsApi } from '@getbrevo/brevo';
+import {
+  SendSmtpEmail,
+  TransactionalEmailsApi,
+  TransactionalEmailsApiApiKeys
+} from '@getbrevo/brevo';
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { readFileSync } from 'fs';
@@ -25,7 +29,10 @@ export class MailService {
 
   constructor() {
     this.api = new TransactionalEmailsApi();
-    (this.api as any).authentications.apiKey.apiKey = process.env.BREVO_API_KEY;
+    this.api.setApiKey(
+      TransactionalEmailsApiApiKeys.apiKey,
+      process.env.BREVO_API_KEY
+    );
   }
   private loadTemplate(templateName: string, context: any): string {
     const templateDir =
@@ -46,6 +53,7 @@ export class MailService {
     try {
       await this.api.sendTransacEmail(message);
     } catch (err) {
+      console.log(err);
       throw new Error(err);
     }
   }

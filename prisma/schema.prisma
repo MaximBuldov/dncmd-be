@@ -41,6 +41,7 @@ model Product {
 
   name           String
   price          Float
+  sale_price     Float?
   date_time      DateTime
   is_canceled    Boolean  @default(false)
   stock_quantity Int      @default(13)
@@ -51,6 +52,8 @@ model Product {
   bundle   Bundle?        @relation(fields: [bundleId], references: [id])
   bundleId Int?
 
+  categories Category[]
+
   @@map("product")
 }
 
@@ -59,6 +62,8 @@ model Bundle {
   created_at DateTime  @default(now())
   discount   Float
   products   Product[]
+
+  @@map("bundle")
 }
 
 model Order {
@@ -113,7 +118,7 @@ model Coupon {
   discount_type DiscountType @default(fixed_cart)
   description   String?
   date_expires  DateTime?
-  exc_cat       Int[]        @default([])
+  allowed_cat   Category[]
 
   used_by       User[] @relation("usedCoupons")
   allowed_users User[] @relation("allowedCoupons")
@@ -124,16 +129,34 @@ model Coupon {
 }
 
 model Template {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
+  id         Int        @id @default(autoincrement())
+  created_at DateTime   @default(now())
   price      Float
   name       String
+  time       String
+  categories Category[]
+
+  @@map("template")
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  name       String   @unique
+
+  products Product[]
+
+  templates Template[]
+  coupons   Coupon[]
+
+  @@map("category")
 }
 
 enum DiscountType {
   percent
   fixed_cart
   fixed_product
+  credit
 }
 
 enum OrderStatus {
