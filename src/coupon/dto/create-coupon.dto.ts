@@ -35,10 +35,6 @@ export class CreateCouponDto {
 
   @IsOptional()
   @IsArray()
-  exc_cat?: number[] = [];
-
-  @IsOptional()
-  @IsArray()
   used_by?: number[] = [];
 
   @IsOptional()
