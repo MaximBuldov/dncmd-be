@@ -19,6 +19,7 @@ import { CouponService } from './coupon.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { CouponQueryDto } from './dto/query-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { ValidateCouponDto } from './dto/validate-coupon.dto';
 
 @Controller('coupon')
 export class CouponController {
@@ -51,8 +52,11 @@ export class CouponController {
 
   @Auth()
   @Post('validate')
-  async findOne(@CurrentUser('id') id: string, @Body('code') code: string) {
-    return await this.couponService.findOne(+id, code);
+  async findOne(
+    @CurrentUser('id') user: string,
+    @Body() data: ValidateCouponDto
+  ) {
+    return await this.couponService.findOne(+user, data);
   }
 
   @Auth()

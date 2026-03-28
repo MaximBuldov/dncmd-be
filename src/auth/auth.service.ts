@@ -78,13 +78,18 @@ export class AuthService {
     await this.mailService.welcome(user.email, user.first_name);
     await this.mailService.newStudent(user);
 
-    await this.couponService.create({
-      code: `welcome${user.id}`,
-      allowed_users: [user.id],
-      amount: 15,
-      date_expires: dayjs().add(1, 'year').toDate(),
-      discount_type: 'fixed_cart'
+    const welcomeAmount = await this.prisma.setting.findUnique({
+      where: { key: 'first_class_discount' }
     });
+    if (welcomeAmount) {
+      await this.couponService.create({
+        code: `welcome${user.id}`,
+        allowed_users: [user.id],
+        amount: +welcomeAmount.value,
+        date_expires: dayjs().add(1, 'year').toDate(),
+        discount_type: 'fixed_cart'
+      });
+    }
 
     return await this.returnUserFields(user);
   }

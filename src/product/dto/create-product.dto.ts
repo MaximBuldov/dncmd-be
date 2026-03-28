@@ -24,12 +24,14 @@ export class CreateProductDto {
   @IsOptional()
   is_canceled?: boolean;
 
-  @IsNumber()
-  category_id: number;
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  categories?: number[] = [];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsNumber({}, { each: true })
   wait_list?: number[] = [];
 
   @IsInt()

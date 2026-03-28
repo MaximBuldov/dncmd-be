@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { Product } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateBundleDto } from './dto/create-bundle.dto';
 import { UpdateBundleDto } from './dto/update-bundle.dto';
+
+export interface IBundleRes {
+  discount: number;
+  id: number;
+  products: Product[];
+}
 
 @Injectable()
 export class BundleService {
@@ -39,7 +46,7 @@ export class BundleService {
     return await this.prisma.bundle.findMany({ include: { products: true } });
   }
 
-  async getProductsWithPrice(selectedIds: number[]) {
+  async getProductsWithPrice(selectedIds: number[]): Promise<IBundleRes[]> {
     const bundels = await this.getAll();
     const selected = new Set(selectedIds);
     const groups = [];
@@ -80,5 +87,12 @@ export class BundleService {
     }
 
     return groups;
+  }
+
+  async getProductPriceFromBundle(productIds: number[]) {
+    const product = (await this.getProductsWithPrice(productIds))
+      .flatMap((bundle) => bundle.products)
+      .sort((a, b) => (a.sale_price ?? a.price) - (b.sale_price ?? b.price))[0];
+    return product.sale_price ?? product.price;
   }
 }

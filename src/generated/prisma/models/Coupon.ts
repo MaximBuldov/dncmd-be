@@ -45,6 +45,7 @@ export type CouponMinAggregateOutputType = {
   discount_type: $Enums.DiscountType | null
   description: string | null
   date_expires: Date | null
+  isPublic: boolean | null
 }
 
 export type CouponMaxAggregateOutputType = {
@@ -56,6 +57,7 @@ export type CouponMaxAggregateOutputType = {
   discount_type: $Enums.DiscountType | null
   description: string | null
   date_expires: Date | null
+  isPublic: boolean | null
 }
 
 export type CouponCountAggregateOutputType = {
@@ -67,6 +69,7 @@ export type CouponCountAggregateOutputType = {
   discount_type: number
   description: number
   date_expires: number
+  isPublic: number
   _all: number
 }
 
@@ -90,6 +93,7 @@ export type CouponMinAggregateInputType = {
   discount_type?: true
   description?: true
   date_expires?: true
+  isPublic?: true
 }
 
 export type CouponMaxAggregateInputType = {
@@ -101,6 +105,7 @@ export type CouponMaxAggregateInputType = {
   discount_type?: true
   description?: true
   date_expires?: true
+  isPublic?: true
 }
 
 export type CouponCountAggregateInputType = {
@@ -112,6 +117,7 @@ export type CouponCountAggregateInputType = {
   discount_type?: true
   description?: true
   date_expires?: true
+  isPublic?: true
   _all?: true
 }
 
@@ -210,6 +216,7 @@ export type CouponGroupByOutputType = {
   discount_type: $Enums.DiscountType
   description: string | null
   date_expires: Date | null
+  isPublic: boolean
   _count: CouponCountAggregateOutputType | null
   _avg: CouponAvgAggregateOutputType | null
   _sum: CouponSumAggregateOutputType | null
@@ -244,6 +251,7 @@ export type CouponWhereInput = {
   discount_type?: Prisma.EnumDiscountTypeFilter<"Coupon"> | $Enums.DiscountType
   description?: Prisma.StringNullableFilter<"Coupon"> | string | null
   date_expires?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
+  isPublic?: Prisma.BoolFilter<"Coupon"> | boolean
   allowed_cat?: Prisma.CategoryListRelationFilter
   used_by?: Prisma.UserListRelationFilter
   allowed_users?: Prisma.UserListRelationFilter
@@ -259,6 +267,7 @@ export type CouponOrderByWithRelationInput = {
   discount_type?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   date_expires?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   allowed_cat?: Prisma.CategoryOrderByRelationAggregateInput
   used_by?: Prisma.UserOrderByRelationAggregateInput
   allowed_users?: Prisma.UserOrderByRelationAggregateInput
@@ -277,6 +286,7 @@ export type CouponWhereUniqueInput = Prisma.AtLeast<{
   discount_type?: Prisma.EnumDiscountTypeFilter<"Coupon"> | $Enums.DiscountType
   description?: Prisma.StringNullableFilter<"Coupon"> | string | null
   date_expires?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
+  isPublic?: Prisma.BoolFilter<"Coupon"> | boolean
   allowed_cat?: Prisma.CategoryListRelationFilter
   used_by?: Prisma.UserListRelationFilter
   allowed_users?: Prisma.UserListRelationFilter
@@ -292,6 +302,7 @@ export type CouponOrderByWithAggregationInput = {
   discount_type?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   date_expires?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
   _count?: Prisma.CouponCountOrderByAggregateInput
   _avg?: Prisma.CouponAvgOrderByAggregateInput
   _max?: Prisma.CouponMaxOrderByAggregateInput
@@ -311,6 +322,7 @@ export type CouponScalarWhereWithAggregatesInput = {
   discount_type?: Prisma.EnumDiscountTypeWithAggregatesFilter<"Coupon"> | $Enums.DiscountType
   description?: Prisma.StringNullableWithAggregatesFilter<"Coupon"> | string | null
   date_expires?: Prisma.DateTimeNullableWithAggregatesFilter<"Coupon"> | Date | string | null
+  isPublic?: Prisma.BoolWithAggregatesFilter<"Coupon"> | boolean
 }
 
 export type CouponCreateInput = {
@@ -321,6 +333,7 @@ export type CouponCreateInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserCreateNestedManyWithoutCouponsInput
@@ -336,6 +349,7 @@ export type CouponUncheckedCreateInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryUncheckedCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserUncheckedCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserUncheckedCreateNestedManyWithoutCouponsInput
@@ -350,6 +364,7 @@ export type CouponUpdateInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUpdateManyWithoutCouponsNestedInput
@@ -365,6 +380,7 @@ export type CouponUncheckedUpdateInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUncheckedUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUncheckedUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUncheckedUpdateManyWithoutCouponsNestedInput
@@ -380,6 +396,7 @@ export type CouponCreateManyInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
 }
 
 export type CouponUpdateManyMutationInput = {
@@ -390,6 +407,7 @@ export type CouponUpdateManyMutationInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CouponUncheckedUpdateManyInput = {
@@ -401,6 +419,7 @@ export type CouponUncheckedUpdateManyInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CouponListRelationFilter = {
@@ -422,6 +441,7 @@ export type CouponCountOrderByAggregateInput = {
   discount_type?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date_expires?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
 }
 
 export type CouponAvgOrderByAggregateInput = {
@@ -438,6 +458,7 @@ export type CouponMaxOrderByAggregateInput = {
   discount_type?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date_expires?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
 }
 
 export type CouponMinOrderByAggregateInput = {
@@ -449,6 +470,7 @@ export type CouponMinOrderByAggregateInput = {
   discount_type?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date_expires?: Prisma.SortOrder
+  isPublic?: Prisma.SortOrder
 }
 
 export type CouponSumOrderByAggregateInput = {
@@ -624,6 +646,7 @@ export type CouponCreateWithoutUsed_byInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryCreateNestedManyWithoutCouponsInput
   allowed_users?: Prisma.UserCreateNestedManyWithoutCouponsInput
   orders?: Prisma.OrderCreateNestedManyWithoutCouponsInput
@@ -638,6 +661,7 @@ export type CouponUncheckedCreateWithoutUsed_byInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryUncheckedCreateNestedManyWithoutCouponsInput
   allowed_users?: Prisma.UserUncheckedCreateNestedManyWithoutCouponsInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCouponsInput
@@ -656,6 +680,7 @@ export type CouponCreateWithoutAllowed_usersInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserCreateNestedManyWithoutUsed_couponsInput
   orders?: Prisma.OrderCreateNestedManyWithoutCouponsInput
@@ -670,6 +695,7 @@ export type CouponUncheckedCreateWithoutAllowed_usersInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryUncheckedCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserUncheckedCreateNestedManyWithoutUsed_couponsInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCouponsInput
@@ -708,6 +734,7 @@ export type CouponScalarWhereInput = {
   discount_type?: Prisma.EnumDiscountTypeFilter<"Coupon"> | $Enums.DiscountType
   description?: Prisma.StringNullableFilter<"Coupon"> | string | null
   date_expires?: Prisma.DateTimeNullableFilter<"Coupon"> | Date | string | null
+  isPublic?: Prisma.BoolFilter<"Coupon"> | boolean
 }
 
 export type CouponUpsertWithWhereUniqueWithoutAllowed_usersInput = {
@@ -734,6 +761,7 @@ export type CouponCreateWithoutOrdersInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserCreateNestedManyWithoutCouponsInput
@@ -748,6 +776,7 @@ export type CouponUncheckedCreateWithoutOrdersInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   allowed_cat?: Prisma.CategoryUncheckedCreateNestedManyWithoutCouponsInput
   used_by?: Prisma.UserUncheckedCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserUncheckedCreateNestedManyWithoutCouponsInput
@@ -782,6 +811,7 @@ export type CouponCreateWithoutAllowed_catInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   used_by?: Prisma.UserCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserCreateNestedManyWithoutCouponsInput
   orders?: Prisma.OrderCreateNestedManyWithoutCouponsInput
@@ -796,6 +826,7 @@ export type CouponUncheckedCreateWithoutAllowed_catInput = {
   discount_type?: $Enums.DiscountType
   description?: string | null
   date_expires?: Date | string | null
+  isPublic?: boolean
   used_by?: Prisma.UserUncheckedCreateNestedManyWithoutUsed_couponsInput
   allowed_users?: Prisma.UserUncheckedCreateNestedManyWithoutCouponsInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCouponsInput
@@ -830,6 +861,7 @@ export type CouponUpdateWithoutUsed_byInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUpdateManyWithoutCouponsNestedInput
   allowed_users?: Prisma.UserUpdateManyWithoutCouponsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCouponsNestedInput
@@ -844,6 +876,7 @@ export type CouponUncheckedUpdateWithoutUsed_byInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUncheckedUpdateManyWithoutCouponsNestedInput
   allowed_users?: Prisma.UserUncheckedUpdateManyWithoutCouponsNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCouponsNestedInput
@@ -858,6 +891,7 @@ export type CouponUncheckedUpdateManyWithoutUsed_byInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CouponUpdateWithoutAllowed_usersInput = {
@@ -868,6 +902,7 @@ export type CouponUpdateWithoutAllowed_usersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUpdateManyWithoutUsed_couponsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCouponsNestedInput
@@ -882,6 +917,7 @@ export type CouponUncheckedUpdateWithoutAllowed_usersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUncheckedUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUncheckedUpdateManyWithoutUsed_couponsNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCouponsNestedInput
@@ -896,6 +932,7 @@ export type CouponUncheckedUpdateManyWithoutAllowed_usersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CouponUpdateWithoutOrdersInput = {
@@ -906,6 +943,7 @@ export type CouponUpdateWithoutOrdersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUpdateManyWithoutCouponsNestedInput
@@ -920,6 +958,7 @@ export type CouponUncheckedUpdateWithoutOrdersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   allowed_cat?: Prisma.CategoryUncheckedUpdateManyWithoutCouponsNestedInput
   used_by?: Prisma.UserUncheckedUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUncheckedUpdateManyWithoutCouponsNestedInput
@@ -934,6 +973,7 @@ export type CouponUncheckedUpdateManyWithoutOrdersInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type CouponUpdateWithoutAllowed_catInput = {
@@ -944,6 +984,7 @@ export type CouponUpdateWithoutAllowed_catInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   used_by?: Prisma.UserUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUpdateManyWithoutCouponsNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCouponsNestedInput
@@ -958,6 +999,7 @@ export type CouponUncheckedUpdateWithoutAllowed_catInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   used_by?: Prisma.UserUncheckedUpdateManyWithoutUsed_couponsNestedInput
   allowed_users?: Prisma.UserUncheckedUpdateManyWithoutCouponsNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutCouponsNestedInput
@@ -972,6 +1014,7 @@ export type CouponUncheckedUpdateManyWithoutAllowed_catInput = {
   discount_type?: Prisma.EnumDiscountTypeFieldUpdateOperationsInput | $Enums.DiscountType
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_expires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -1041,6 +1084,7 @@ export type CouponSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   discount_type?: boolean
   description?: boolean
   date_expires?: boolean
+  isPublic?: boolean
   allowed_cat?: boolean | Prisma.Coupon$allowed_catArgs<ExtArgs>
   used_by?: boolean | Prisma.Coupon$used_byArgs<ExtArgs>
   allowed_users?: boolean | Prisma.Coupon$allowed_usersArgs<ExtArgs>
@@ -1057,6 +1101,7 @@ export type CouponSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   discount_type?: boolean
   description?: boolean
   date_expires?: boolean
+  isPublic?: boolean
 }, ExtArgs["result"]["coupon"]>
 
 export type CouponSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1068,6 +1113,7 @@ export type CouponSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   discount_type?: boolean
   description?: boolean
   date_expires?: boolean
+  isPublic?: boolean
 }, ExtArgs["result"]["coupon"]>
 
 export type CouponSelectScalar = {
@@ -1079,9 +1125,10 @@ export type CouponSelectScalar = {
   discount_type?: boolean
   description?: boolean
   date_expires?: boolean
+  isPublic?: boolean
 }
 
-export type CouponOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "updated_at" | "code" | "amount" | "discount_type" | "description" | "date_expires", ExtArgs["result"]["coupon"]>
+export type CouponOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "created_at" | "updated_at" | "code" | "amount" | "discount_type" | "description" | "date_expires" | "isPublic", ExtArgs["result"]["coupon"]>
 export type CouponInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   allowed_cat?: boolean | Prisma.Coupon$allowed_catArgs<ExtArgs>
   used_by?: boolean | Prisma.Coupon$used_byArgs<ExtArgs>
@@ -1109,6 +1156,7 @@ export type $CouponPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     discount_type: $Enums.DiscountType
     description: string | null
     date_expires: Date | null
+    isPublic: boolean
   }, ExtArgs["result"]["coupon"]>
   composites: {}
 }
@@ -1544,6 +1592,7 @@ export interface CouponFieldRefs {
   readonly discount_type: Prisma.FieldRef<"Coupon", 'DiscountType'>
   readonly description: Prisma.FieldRef<"Coupon", 'String'>
   readonly date_expires: Prisma.FieldRef<"Coupon", 'DateTime'>
+  readonly isPublic: Prisma.FieldRef<"Coupon", 'Boolean'>
 }
     
 

@@ -1,20 +1,26 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
-import { Coupon } from 'src/generated/prisma/client';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { BundleService } from 'src/bundle/bundle.service';
+import { Coupon, DiscountType } from 'src/generated/prisma/client';
+import { CouponGetPayload } from 'src/generated/prisma/models';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { CouponQueryDto } from './dto/query-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
+import { ValidateCouponDto } from './dto/validate-coupon.dto';
+
+export interface CodeValidation {
+  valid: boolean;
+  coupon: Coupon;
+  message?: string;
+}
 
 @Injectable()
 export class CouponService {
   constructor(
     private prisma: PrismaService,
-    private mailService: MailService
+    private mailService: MailService,
+    private readonly bundleService: BundleService
   ) {}
 
   async create(data: CreateCouponDto) {
@@ -29,9 +35,13 @@ export class CouponService {
         ...data,
         code: data.code.toLowerCase(),
         allowed_users: {
-          connect: data.allowed_users.map((id) => ({ id }))
+          connect: data.allowed_users?.map((id) => ({ id }))
         },
-        used_by: { connect: [] }
+        used_by: { connect: [] },
+        allowed_cat: {
+          connect: data.allowed_cat?.map((id) => ({ id }))
+        },
+        isPublic: !data.allowed_users?.length
       },
       include: {
         allowed_users: selectUser
@@ -48,40 +58,58 @@ export class CouponService {
   async findMy(id: number) {
     return await this.prisma.coupon.findMany({
       where: {
-        allowed_users: {
-          some: {
-            id
-          }
-        },
         used_by: {
           none: { id }
         },
         date_expires: {
           gte: new Date()
-        }
+        },
+        OR: [
+          {
+            allowed_users: {
+              some: { id }
+            }
+          },
+          { isPublic: true }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      },
+      include: {
+        allowed_users: true,
+        allowed_cat: true
       }
     });
   }
 
-  async findOne(id: number, code: string) {
+  async findOne(id: number, { code, products }: ValidateCouponDto) {
     const coupon = await this.prisma.coupon.findUnique({
       where: {
         code: code.toLowerCase(),
-        allowed_users: {
-          some: { id }
-        },
-        used_by: {
-          none: { id }
-        },
-        date_expires: {
-          gte: new Date()
-        }
+        used_by: { none: { id } },
+        OR: [{ date_expires: null }, { date_expires: { gte: new Date() } }],
+        AND: [
+          {
+            OR: [{ isPublic: true }, { allowed_users: { some: { id } } }]
+          }
+        ]
+      },
+      include: {
+        allowed_cat: true
       }
     });
 
-    if (!coupon) throw new NotFoundException('Coupon not found');
+    if (!coupon) {
+      return {
+        valid: false,
+        coupon,
+        message:
+          'Coupon is invalid, expired, or not available for your account.'
+      };
+    }
 
-    return coupon;
+    return await this.validateCoupon(coupon, products);
   }
 
   async useCoupon(
@@ -112,6 +140,11 @@ export class CouponService {
         used_by: !!data?.used_by
           ? {
               set: data.used_by.map((id) => ({ id }))
+            }
+          : undefined,
+        allowed_cat: !!data?.allowed_cat
+          ? {
+              set: data.allowed_cat.map((id) => ({ id }))
             }
           : undefined
       },
@@ -149,11 +182,61 @@ export class CouponService {
         include: {
           allowed_users: selectUser,
           used_by: selectUser,
-          orders: true
+          orders: true,
+          allowed_cat: true
         }
       }),
       this.prisma.coupon.count()
     ]);
+  }
+
+  private async validateCoupon(
+    coupon: CouponGetPayload<{
+      include: { allowed_cat: true };
+    }>,
+    productIds: number[]
+  ): Promise<CodeValidation> {
+    const products = await this.prisma.product.findMany({
+      where: { id: { in: productIds }, is_canceled: false },
+      include: { categories: true }
+    });
+
+    if (products.length === 0) {
+      return {
+        valid: false,
+        coupon,
+        message: 'No valid products found for the provided IDs.'
+      };
+    }
+
+    const allowedCatIds = coupon.allowed_cat.map((c) => c.id);
+    const hasCategoryRestriction = allowedCatIds.length > 0;
+
+    const eligibleItems = hasCategoryRestriction
+      ? products.filter((item) =>
+          item.categories.some((cat) => allowedCatIds.includes(cat.id))
+        )
+      : products;
+
+    if (eligibleItems.length === 0) {
+      return {
+        valid: false,
+        coupon,
+        message: 'None of your selected products are eligible for this coupon.'
+      };
+    }
+
+    if (coupon.discount_type === DiscountType.credit) {
+      const price = await this.bundleService.getProductPriceFromBundle(
+        eligibleItems.map((el) => el.id)
+      );
+      coupon.amount = price;
+    }
+
+    return {
+      valid: true,
+      coupon
+    };
   }
 }
 

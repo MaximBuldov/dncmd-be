@@ -9,19 +9,14 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductService {
   constructor(private prisma: PrismaService) {}
 
-  async create({ wait_list, ...rest }: CreateProductDto) {
-    return this.prisma.product.create({
-      data: {
-        ...rest,
-        wait_list: {
-          connect: wait_list.map((id) => ({ id }))
-        }
-      }
-    });
+  async create(data: CreateProductDto) {
+    return this.buildCreateInput(data);
   }
 
   async createMany(data: CreateProductDto[]) {
-    return this.prisma.product.createManyAndReturn({ data });
+    return await this.prisma.$transaction(
+      data.map((dto) => this.buildCreateInput(dto))
+    );
   }
 
   async findAll(user: User, month?: string) {
@@ -55,7 +50,8 @@ export class ProductService {
               }
             }
           }
-        }
+        },
+        categories: true
       }
     });
     if (user?.role === Role.customer) {
@@ -70,13 +66,19 @@ export class ProductService {
     }
   }
 
-  async update(id: number, { wait_list, ...rest }: UpdateProductDto) {
-    return this.prisma.product.update({
+  async update(
+    id: number,
+    { wait_list, categories, ...rest }: UpdateProductDto
+  ) {
+    return await this.prisma.product.update({
       where: { id },
       data: {
         ...rest,
         wait_list: {
           set: wait_list.map((id) => ({ id }))
+        },
+        categories: {
+          set: categories.map((id) => ({ id }))
         }
       }
     });
@@ -93,6 +95,20 @@ export class ProductService {
         stock_quantity: {
           [action]: 1
         }
+      }
+    });
+  }
+
+  private buildCreateInput({
+    categories = [],
+    wait_list = [],
+    ...rest
+  }: CreateProductDto) {
+    return this.prisma.product.create({
+      data: {
+        ...rest,
+        wait_list: { connect: wait_list.map((id) => ({ id })) },
+        categories: { connect: categories.map((id) => ({ id })) }
       }
     });
   }

@@ -119,6 +119,7 @@ model Coupon {
   description   String?
   date_expires  DateTime?
   allowed_cat   Category[]
+  isPublic      Boolean      @default(false)
 
   used_by       User[] @relation("usedCoupons")
   allowed_users User[] @relation("allowedCoupons")
@@ -150,6 +151,15 @@ model Category {
   coupons   Coupon[]
 
   @@map("category")
+}
+
+model Setting {
+  id Int @id @default(autoincrement())
+
+  key   String @unique
+  value String
+
+  @@map("setting")
 }
 
 enum DiscountType {

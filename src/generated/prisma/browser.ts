@@ -57,3 +57,8 @@ export type Template = Prisma.TemplateModel
  * 
  */
 export type Category = Prisma.CategoryModel
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = Prisma.SettingModel

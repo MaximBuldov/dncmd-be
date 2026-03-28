@@ -19,7 +19,7 @@ export class CreateCouponDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @Min(1)
+  @Min(0)
   amount: number;
 
   @IsEnum(DiscountType)
@@ -35,9 +35,13 @@ export class CreateCouponDto {
 
   @IsOptional()
   @IsArray()
-  used_by?: number[] = [];
+  allowed_cat?: number[];
 
   @IsOptional()
   @IsArray()
-  allowed_users: number[] = [];
+  used_by?: number[];
+
+  @IsOptional()
+  @IsArray()
+  allowed_users: number[];
 }

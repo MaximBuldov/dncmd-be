@@ -12,6 +12,7 @@ import { ProductModule } from './product/product.module';
 import { TemplateModule } from './template/template.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { CategoryModule } from './category/category.module';
     MailModule,
     TemplateModule,
     BundleModule,
-    CategoryModule
+    CategoryModule,
+    SettingModule
   ],
   controllers: [AppController],
   providers: [AppService, Logger]

@@ -58,7 +58,8 @@ export const ModelName = {
   OrderProduct: 'OrderProduct',
   Coupon: 'Coupon',
   Template: 'Template',
-  Category: 'Category'
+  Category: 'Category',
+  Setting: 'Setting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -157,7 +158,8 @@ export const CouponScalarFieldEnum = {
   amount: 'amount',
   discount_type: 'discount_type',
   description: 'description',
-  date_expires: 'date_expires'
+  date_expires: 'date_expires',
+  isPublic: 'isPublic'
 } as const
 
 export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
@@ -181,6 +183,15 @@ export const CategoryScalarFieldEnum = {
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const SettingScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value'
+} as const
+
+export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
 
 
 export const SortOrder = {
