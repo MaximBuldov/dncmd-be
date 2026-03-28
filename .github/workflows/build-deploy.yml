@@ -1,4 +1,4 @@
-name: BE Prod (server build)
+name: BE Prod
 
 on:
   push:
