@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
-import { OrderStatus } from 'src/generated/prisma/client';
+import { DiscountType, OrderStatus } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 
@@ -30,8 +30,8 @@ export class OrderProductService {
     if (isDeadline && isPaid) {
       await this.couponService.create({
         code: `res${res.order_id}${res.user_id}${res.product_id}`,
-        amount: res.total,
-        discount_type: 'fixed_cart',
+        amount: 0,
+        discount_type: DiscountType.credit,
         date_expires: dayjs(res.product.date_time)
           .add(1, 'month')
           .endOf('month')
