@@ -109,6 +109,9 @@ export class ProductService {
         ...rest,
         wait_list: { connect: wait_list.map((id) => ({ id })) },
         categories: { connect: categories.map((id) => ({ id })) }
+      },
+      include: {
+        categories: true
       }
     });
   }
