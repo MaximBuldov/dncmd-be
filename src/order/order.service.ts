@@ -200,7 +200,7 @@ export class OrderService {
   }
 
   async updateStripe({ data }: UpdateStripeOrder) {
-    if (!!data.object.id) return;
+    if (!data.object.id) return;
     try {
       const order = await this.prisma.order.update({
         where: { stripe_id: data.object.id },
