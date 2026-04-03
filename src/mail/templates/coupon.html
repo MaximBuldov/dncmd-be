@@ -29,7 +29,8 @@
       <p>Hi {{name}},</p>
       <p>
         Exciting news! You've got a new coupon. Use code <b>{{code}}</b> at
-        checkout to enjoy ${{amount}} off your next dance class booking.
+        checkout {{#if amount}} to enjoy ${{amount}} off your next dance class
+        booking. {{else}} for a free dance class booking! {{/if}}
       </p>
       <p>Best Regards,<br />Dance Mode Team</p>
     </div>
