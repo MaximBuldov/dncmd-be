@@ -44,7 +44,8 @@ export class CouponService {
         isPublic: !data.allowed_users?.length
       },
       include: {
-        allowed_users: selectUser
+        allowed_users: selectUser,
+        allowed_cat: true
       }
     });
 
