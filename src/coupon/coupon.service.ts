@@ -245,6 +245,7 @@ const selectUser = {
   select: {
     id: true,
     email: true,
-    first_name: true
+    first_name: true,
+    last_name: true
   }
 };
