@@ -6,6 +6,7 @@ import {
   OrderStatus,
   ProductStatus
 } from 'src/generated/prisma/client';
+import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 
@@ -13,7 +14,8 @@ import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 export class OrderProductService {
   constructor(
     private prisma: PrismaService,
-    private couponService: CouponService
+    private couponService: CouponService,
+    private mailService: MailService
   ) {}
 
   async update(id: number, { productStatus }: UpdateOrderProductDto) {
@@ -27,7 +29,8 @@ export class OrderProductService {
       data: { productStatus },
       include: {
         product: true,
-        order: true
+        order: true,
+        user: { select: { first_name: true, last_name: true, email: true } }
       }
     });
 
@@ -39,6 +42,7 @@ export class OrderProductService {
         where: { id: res.product_id },
         data: { stock_quantity: { increment: 1 } }
       });
+      this.mailService.cancelClass(res.user, res.product);
     }
 
     const isDeadline = dayjs().isBefore(

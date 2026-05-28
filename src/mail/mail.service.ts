@@ -124,6 +124,40 @@ export class MailService {
     );
   }
 
+  async cancelClass(
+    user: Pick<User, 'email' | 'first_name' | 'last_name'>,
+    product: Pick<Product, 'name' | 'date_time'>
+  ) {
+    await this.sendMail(
+      process.env.EMAIL,
+      'Class Canceled - Dance Mode',
+      {
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        className: product.name,
+        dateTime: dayjs(product.date_time).format('MM/DD/YYYY h:mma')
+      },
+      'cancel-class'
+    );
+  }
+
+  async waitList(
+    user: Pick<User, 'email' | 'first_name' | 'last_name'>,
+    product: Pick<Product, 'name' | 'date_time'>
+  ) {
+    await this.sendMail(
+      process.env.EMAIL,
+      'Wait List - Dance Mode',
+      {
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        className: product.name,
+        dateTime: dayjs(product.date_time).format('MM/DD/YYYY h:mma')
+      },
+      'wait-list'
+    );
+  }
+
   async resetPassword(user: User, link: string) {
     await this.sendMail(
       user.email,

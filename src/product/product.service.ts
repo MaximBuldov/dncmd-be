@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { Prisma, Role, User } from 'src/generated/prisma/client';
+import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService
+  ) {}
 
   async create(data: CreateProductDto) {
     return this.buildCreateInput(data);
@@ -89,15 +93,16 @@ export class ProductService {
     return await this.prisma.product.delete({ where: { id } });
   }
 
-  async joinWaitList(productId: number, userId: number) {
+  async joinWaitList(productId: number, user: User) {
     const product = await this.prisma.product.update({
       where: { id: productId },
-      data: { wait_list: { connect: { id: userId } } },
+      data: { wait_list: { connect: { id: user.id } } },
       include: {
         categories: true,
         wait_list: { select: { id: true, first_name: true, last_name: true } }
       }
     });
+    this.mailService.waitList(user, product);
     return product;
   }
 

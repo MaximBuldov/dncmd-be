@@ -46,7 +46,7 @@ export class ProductController {
     @Param('id') id: string,
     @CurrentUser() user: User
   ) {
-    return await this.productService.joinWaitList(+id, user.id);
+    return await this.productService.joinWaitList(+id, user);
   }
 
   @Auth()
