@@ -41,6 +41,15 @@ export class ProductController {
   }
 
   @Auth()
+  @Patch(':id/wait-list')
+  async joinWaitList(
+    @Param('id') id: string,
+    @CurrentUser() user: User
+  ) {
+    return await this.productService.joinWaitList(+id, user.id);
+  }
+
+  @Auth()
   @Roles(Role.administrator)
   @Patch(':id')
   async update(

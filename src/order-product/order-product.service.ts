@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
-import { DiscountType, OrderStatus } from 'src/generated/prisma/client';
+import {
+  DiscountType,
+  OrderStatus,
+  ProductStatus
+} from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 
@@ -13,6 +17,11 @@ export class OrderProductService {
   ) {}
 
   async update(id: number, { productStatus }: UpdateOrderProductDto) {
+    const existing = await this.prisma.orderProduct.findUnique({
+      where: { id },
+      select: { productStatus: true }
+    });
+
     const res = await this.prisma.orderProduct.update({
       where: { id },
       data: { productStatus },
@@ -21,6 +30,16 @@ export class OrderProductService {
         order: true
       }
     });
+
+    if (
+      productStatus === ProductStatus.canceled &&
+      existing?.productStatus !== ProductStatus.canceled
+    ) {
+      await this.prisma.product.update({
+        where: { id: res.product_id },
+        data: { stock_quantity: { increment: 1 } }
+      });
+    }
 
     const isDeadline = dayjs().isBefore(
       dayjs(res.product.date_time).subtract(5, 'hour')

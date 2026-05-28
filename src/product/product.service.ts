@@ -51,7 +51,8 @@ export class ProductService {
             }
           }
         },
-        categories: true
+        categories: true,
+        wait_list: { select: { id: true, first_name: true, last_name: true } }
       }
     });
     if (user?.role === Role.customer) {
@@ -86,6 +87,18 @@ export class ProductService {
 
   async remove(id: number) {
     return await this.prisma.product.delete({ where: { id } });
+  }
+
+  async joinWaitList(productId: number, userId: number) {
+    const product = await this.prisma.product.update({
+      where: { id: productId },
+      data: { wait_list: { connect: { id: userId } } },
+      include: {
+        categories: true,
+        wait_list: { select: { id: true, first_name: true, last_name: true } }
+      }
+    });
+    return product;
   }
 
   async updateProductsAmount(ids: number[], action: 'increment' | 'decrement') {
