@@ -129,7 +129,14 @@ export class ProductService {
         categories: { connect: categories.map((id) => ({ id })) }
       },
       include: {
-        categories: true
+        categories: true,
+        wait_list: { select: { id: true, first_name: true, last_name: true } },
+        orders: {
+          include: {
+            order: { select: { status: true } },
+            user: { select: { first_name: true, last_name: true } }
+          }
+        }
       }
     });
   }
