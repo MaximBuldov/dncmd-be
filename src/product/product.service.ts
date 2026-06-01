@@ -85,6 +85,16 @@ export class ProductService {
         categories: {
           set: categories.map((id) => ({ id }))
         }
+      },
+      include: {
+        categories: true,
+        wait_list: { select: { id: true, first_name: true, last_name: true } },
+        orders: {
+          include: {
+            order: { select: { status: true } },
+            user: { select: { first_name: true, last_name: true } }
+          }
+        }
       }
     });
   }
@@ -99,7 +109,13 @@ export class ProductService {
       data: { wait_list: { connect: { id: user.id } } },
       include: {
         categories: true,
-        wait_list: { select: { id: true, first_name: true, last_name: true } }
+        wait_list: { select: { id: true, first_name: true, last_name: true } },
+        orders: {
+          include: {
+            order: { select: { status: true } },
+            user: { select: { first_name: true, last_name: true } }
+          }
+        }
       }
     });
     this.mailService.waitList(user, product);
