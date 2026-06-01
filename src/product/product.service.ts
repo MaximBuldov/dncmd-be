@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { Prisma, Role, User } from 'src/generated/prisma/client';
+
+const STUDIO_TZ = 'America/Los_Angeles';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -27,8 +29,8 @@ export class ProductService {
     const where: Prisma.ProductWhereInput = month
       ? {
           date_time: {
-            gte: dayjs(month, 'YYYY-MM').startOf('month').toDate(),
-            lte: dayjs(month, 'YYYY-MM').endOf('month').toDate()
+            gte: (dayjs as any).tz(month, 'YYYY-MM', STUDIO_TZ).startOf('month').toDate(),
+            lte: (dayjs as any).tz(month, 'YYYY-MM', STUDIO_TZ).endOf('month').toDate()
           },
           orders: {}
         }
@@ -100,6 +102,8 @@ export class ProductService {
   }
 
   async remove(id: number) {
+    const hasOrders = await this.prisma.orderProduct.count({ where: { product_id: id } });
+    if (hasOrders) throw new BadRequestException('Cannot delete a class that has been ordered');
     return await this.prisma.product.delete({ where: { id } });
   }
 
