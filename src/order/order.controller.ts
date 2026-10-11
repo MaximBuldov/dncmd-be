@@ -3,13 +3,17 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
+  HttpCode,
   Param,
   Patch,
   Post,
   Query,
+  RawBodyRequest,
+  Req,
   Response
 } from '@nestjs/common';
-import { Response as Res } from 'express';
+import { Request, Response as Res } from 'express';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CurrentUser } from 'src/auth/decorators/user.decorator';
@@ -54,8 +58,12 @@ export class OrderController {
   }
 
   @Post('update-stripe')
-  async updateStripe(@Body() data) {
-    return this.orderService.updateStripe(data);
+  @HttpCode(200)
+  async updateStripe(
+    @Req() req: RawBodyRequest<Request>,
+    @Headers('stripe-signature') signature: string
+  ) {
+    return this.orderService.updateStripe(req.rawBody, signature, req.body);
   }
 
   @Auth()

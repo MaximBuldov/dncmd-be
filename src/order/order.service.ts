@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
 import { OrderStatus, Prisma, User } from 'src/generated/prisma/client';
@@ -11,17 +11,10 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderQueryDto } from './dto/order-query.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
-interface UpdateStripeOrder {
-  data: {
-    object: {
-      id: string;
-    };
-  };
-}
-
 @Injectable()
 export class OrderService {
   private stripe: Stripe;
+  private readonly logger = new Logger(OrderService.name);
 
   constructor(
     private prisma: PrismaService,
@@ -92,7 +85,7 @@ export class OrderService {
   async createIntent({ total }: CreateIntentDto) {
     if (total < 0.5) throw new Error('Amount must be at least 50 cents');
 
-    const totalInCents = Math.round(total) * 100;
+    const totalInCents = Math.round(total * 100);
 
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
@@ -199,19 +192,45 @@ export class OrderService {
     return order;
   }
 
-  async updateStripe({ data }: UpdateStripeOrder) {
-    if (!data.object.id) return;
+  async updateStripe(
+    rawBody: Buffer,
+    signature: string | undefined,
+    body: Stripe.Event
+  ) {
+    const event = this.parseStripeEvent(rawBody, signature, body);
+    if (event.type !== 'payment_intent.succeeded') return { received: true };
+
+    // The Stripe account also receives payments made outside this app
+    // (payment links, invoices, etc.), so an unknown intent is not an error
+    const paymentIntentId = event.data.object.id;
+    const { count } = await this.prisma.order.updateMany({
+      where: { stripe_id: paymentIntentId },
+      data: { status: OrderStatus.completed }
+    });
+    if (!count) {
+      this.logger.warn(`No order found for payment intent ${paymentIntentId}`);
+    }
+
+    return { received: true };
+  }
+
+  private parseStripeEvent(
+    rawBody: Buffer,
+    signature: string | undefined,
+    body: Stripe.Event
+  ): Stripe.Event {
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!secret) {
+      this.logger.warn(
+        'STRIPE_WEBHOOK_SECRET is not set, skipping webhook signature check'
+      );
+      return body;
+    }
+
     try {
-      const order = await this.prisma.order.update({
-        where: { stripe_id: data.object.id },
-        data: {
-          status: OrderStatus.completed
-        }
-      });
-      return order.id;
-    } catch (err) {
-      console.log(err);
-      throw err;
+      return this.stripe.webhooks.constructEvent(rawBody, signature, secret);
+    } catch {
+      throw new BadRequestException('Invalid Stripe signature');
     }
   }
 
