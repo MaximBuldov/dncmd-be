@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { CouponService } from 'src/coupon/coupon.service';
 import {
   DiscountType,

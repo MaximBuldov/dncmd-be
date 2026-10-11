@@ -182,7 +182,7 @@ export type BundleGroupByOutputType = {
   _max: BundleMaxAggregateOutputType | null
 }
 
-type GetBundleGroupByPayload<T extends BundleGroupByArgs> = Prisma.PrismaPromise<
+export type GetBundleGroupByPayload<T extends BundleGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BundleGroupByOutputType, T['by']> &
       {
@@ -1071,6 +1071,11 @@ export type BundleFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Skip the first `n` Bundles.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Bundles.
+   */
   distinct?: Prisma.BundleScalarFieldEnum | Prisma.BundleScalarFieldEnum[]
 }
 

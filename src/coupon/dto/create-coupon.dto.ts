@@ -9,7 +9,7 @@ import {
   IsString,
   Min
 } from 'class-validator';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { DiscountType } from 'src/generated/prisma/client';
 
 export class CreateCouponDto {

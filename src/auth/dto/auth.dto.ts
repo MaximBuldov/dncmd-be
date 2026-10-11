@@ -7,7 +7,7 @@ import {
   IsString,
   MinLength
 } from 'class-validator';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { Role } from 'src/generated/prisma/client';
 
 export enum UserRole {

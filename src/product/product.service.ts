@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { Prisma, Role, User } from 'src/generated/prisma/client';
 
 const STUDIO_TZ = 'America/Los_Angeles';

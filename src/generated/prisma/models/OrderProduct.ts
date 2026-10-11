@@ -226,7 +226,7 @@ export type OrderProductGroupByOutputType = {
   _max: OrderProductMaxAggregateOutputType | null
 }
 
-type GetOrderProductGroupByPayload<T extends OrderProductGroupByArgs> = Prisma.PrismaPromise<
+export type GetOrderProductGroupByPayload<T extends OrderProductGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<OrderProductGroupByOutputType, T['by']> &
       {
@@ -1532,6 +1532,11 @@ export type OrderProductFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Skip the first `n` OrderProducts.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of OrderProducts.
+   */
   distinct?: Prisma.OrderProductScalarFieldEnum | Prisma.OrderProductScalarFieldEnum[]
 }
 

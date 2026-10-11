@@ -25,6 +25,9 @@ jobs:
             git fetch --all
             git reset --hard origin/master
 
+            echo '--- node version ---'
+            node -v
+
             echo '--- install deps ---'
             npm ci
 

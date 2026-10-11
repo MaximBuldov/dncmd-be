@@ -1,10 +1,6 @@
-import {
-  SendSmtpEmail,
-  TransactionalEmailsApi,
-  TransactionalEmailsApiApiKeys
-} from '@getbrevo/brevo';
+import { BrevoClient } from '@getbrevo/brevo';
 import { Injectable } from '@nestjs/common';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
 import { join } from 'path';
@@ -25,14 +21,10 @@ interface OrderWithItems extends Order {
 
 @Injectable()
 export class MailService {
-  private api: TransactionalEmailsApi;
+  private brevo: BrevoClient;
 
   constructor() {
-    this.api = new TransactionalEmailsApi();
-    this.api.setApiKey(
-      TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
-    );
+    this.brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
   }
   private loadTemplate(templateName: string, context: any): string {
     const templateDir =
@@ -44,14 +36,13 @@ export class MailService {
   }
   async sendMail(to: string, subject: string, data: any, template: string) {
     const html = this.loadTemplate(template, data);
-    const message = new SendSmtpEmail();
-    message.subject = subject;
-    message.htmlContent = html;
-    message.sender = { name: 'DanceMode', email: process.env.EMAIL };
-    message.to = [{ email: to }];
-
     try {
-      await this.api.sendTransacEmail(message);
+      await this.brevo.transactionalEmails.sendTransacEmail({
+        subject,
+        htmlContent: html,
+        sender: { name: 'DanceMode', email: process.env.EMAIL },
+        to: [{ email: to }]
+      });
     } catch (err) {
       console.log(err);
       throw new Error(err);
