@@ -84,3 +84,8 @@ export type Category = Prisma.CategoryModel
  * 
  */
 export type Setting = Prisma.SettingModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel
