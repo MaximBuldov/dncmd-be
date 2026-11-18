@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import dayjs from 'dayjs';
 import { AuditService } from 'src/audit/audit.service';
 import { CouponService } from 'src/coupon/coupon.service';
 import {
   DiscountType,
   OrderStatus,
-  ProductStatus
+  ProductStatus,
+  Role,
+  User
 } from 'src/generated/prisma/client';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma.service';
@@ -23,12 +29,24 @@ export class OrderProductService {
   async update(
     id: number,
     { productStatus }: UpdateOrderProductDto,
-    actorId?: number
+    actor: Pick<User, 'id' | 'role'>
   ) {
+    const actorId = actor.id;
     const existing = await this.prisma.orderProduct.findUnique({
       where: { id },
-      select: { productStatus: true }
+      select: { productStatus: true, user_id: true }
     });
+
+    if (!existing) throw new NotFoundException('Class booking not found');
+
+    if (actor.role !== Role.administrator) {
+      if (existing.user_id !== actor.id) {
+        throw new ForbiddenException('You can only change your own classes');
+      }
+      if (existing.productStatus === ProductStatus.canceled) {
+        throw new ForbiddenException('Canceled class cannot be changed');
+      }
+    }
 
     const res = await this.prisma.orderProduct.update({
       where: { id },
@@ -46,7 +64,7 @@ export class OrderProductService {
       entity: 'order_product',
       entityId: id,
       data: {
-        from: existing?.productStatus ?? null,
+        from: existing.productStatus ?? null,
         to: productStatus ?? null,
         user_id: res.user_id,
         product_id: res.product_id,
@@ -56,7 +74,7 @@ export class OrderProductService {
 
     const isNewlyCanceled =
       productStatus === ProductStatus.canceled &&
-      existing?.productStatus !== ProductStatus.canceled;
+      existing.productStatus !== ProductStatus.canceled;
 
     if (!isNewlyCanceled) return res;
 

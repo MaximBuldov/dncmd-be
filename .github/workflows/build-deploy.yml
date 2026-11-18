@@ -4,6 +4,11 @@ on:
   push:
     branches: ['master']
 
+# Never run two deploys at once: parallel `npm ci` runs out of memory on the server
+concurrency:
+  group: be-prod-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
