@@ -2,6 +2,7 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { BundleModule } from './bundle/bundle.module';
 import { CouponModule } from './coupon/coupon.module';
@@ -17,6 +18,7 @@ import { SettingModule } from './setting/setting.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    AuditModule,
     AuthModule,
     ProductModule,
     UserModule,

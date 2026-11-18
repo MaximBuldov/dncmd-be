@@ -28,8 +28,11 @@ export class CouponController {
   @Auth()
   @Roles(Role.administrator)
   @Post()
-  async create(@Body() createCouponDto: CreateCouponDto) {
-    return await this.couponService.create(createCouponDto);
+  async create(
+    @Body() createCouponDto: CreateCouponDto,
+    @CurrentUser('id') actorId: number
+  ) {
+    return await this.couponService.create(createCouponDto, actorId);
   }
 
   @Auth()
@@ -62,8 +65,8 @@ export class CouponController {
   @Auth()
   @Roles(Role.administrator)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.couponService.remove(+id);
+  async remove(@Param('id') id: string, @CurrentUser('id') actorId: number) {
+    return await this.couponService.remove(+id, actorId);
   }
 
   @Auth()
@@ -71,8 +74,9 @@ export class CouponController {
   @Patch(':id')
   async updateCoupon(
     @Param('id') id: number,
-    @Body() updateCouponDto: UpdateCouponDto
+    @Body() updateCouponDto: UpdateCouponDto,
+    @CurrentUser('id') actorId: number
   ) {
-    return await this.couponService.update(id, updateCouponDto);
+    return await this.couponService.update(+id, updateCouponDto, actorId);
   }
 }

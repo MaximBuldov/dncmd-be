@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { AuditService } from 'src/audit/audit.service';
 import { BundleService } from 'src/bundle/bundle.service';
 import { Coupon, DiscountType } from 'src/generated/prisma/client';
 import { CouponGetPayload } from 'src/generated/prisma/models';
@@ -20,10 +21,11 @@ export class CouponService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
-    private readonly bundleService: BundleService
+    private readonly bundleService: BundleService,
+    private audit: AuditService
   ) {}
 
-  async create(data: CreateCouponDto) {
+  async create(data: CreateCouponDto, actorId?: number) {
     const oldCoupon = await this.prisma.coupon.findUnique({
       where: { code: data.code.toLowerCase() }
     });
@@ -46,6 +48,19 @@ export class CouponService {
       include: {
         allowed_users: selectUser,
         allowed_cat: true
+      }
+    });
+
+    await this.audit.log({
+      actorId,
+      action: 'coupon.create',
+      entity: 'coupon',
+      entityId: coupon.id,
+      data: {
+        code: coupon.code,
+        amount: coupon.amount,
+        discount_type: coupon.discount_type,
+        allowed_users: coupon.allowed_users.map((u) => u.id)
       }
     });
 
@@ -128,7 +143,15 @@ export class CouponService {
     });
   }
 
-  async update(id: number, data: UpdateCouponDto) {
+  async update(id: number, data: UpdateCouponDto, actorId?: number) {
+    await this.audit.log({
+      actorId,
+      action: 'coupon.update',
+      entity: 'coupon',
+      entityId: id,
+      data: JSON.parse(JSON.stringify(data))
+    });
+
     return this.prisma.coupon.update({
       where: { id },
       data: {
@@ -156,7 +179,7 @@ export class CouponService {
     });
   }
 
-  async remove(id: number): Promise<Coupon> {
+  async remove(id: number, actorId?: number): Promise<Coupon> {
     const coupon = await this.prisma.coupon.findUnique({
       where: { id },
       include: { orders: true }
@@ -167,9 +190,19 @@ export class CouponService {
         'Coupon is already linked to an order and cannot be deleted'
       );
 
-    return this.prisma.coupon.delete({
+    const deleted = await this.prisma.coupon.delete({
       where: { id }
     });
+
+    await this.audit.log({
+      actorId,
+      action: 'coupon.delete',
+      entity: 'coupon',
+      entityId: id,
+      data: { code: deleted.code, amount: deleted.amount }
+    });
+
+    return deleted;
   }
 
   async findAll({ per_page, page }: CouponQueryDto) {
