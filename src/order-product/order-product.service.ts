@@ -34,16 +34,17 @@ export class OrderProductService {
       }
     });
 
-    if (
+    const isNewlyCanceled =
       productStatus === ProductStatus.canceled &&
-      existing?.productStatus !== ProductStatus.canceled
-    ) {
-      await this.prisma.product.update({
-        where: { id: res.product_id },
-        data: { stock_quantity: { increment: 1 } }
-      });
-      this.mailService.cancelClass(res.user, res.product);
-    }
+      existing?.productStatus !== ProductStatus.canceled;
+
+    if (!isNewlyCanceled) return res;
+
+    await this.prisma.product.update({
+      where: { id: res.product_id },
+      data: { stock_quantity: { increment: 1 } }
+    });
+    this.mailService.cancelClass(res.user, res.product);
 
     const isDeadline = dayjs().isBefore(
       dayjs(res.product.date_time).subtract(5, 'hour')
